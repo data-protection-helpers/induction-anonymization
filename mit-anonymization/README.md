@@ -2,7 +2,9 @@ Statistical Generative Modeling
 ===============================
 
 # Overview
-Source: MIT
+Source:
+  * [The Synthetic Data Vault : generative modeling for relational databases](https://dspace.mit.edu/handle/1721.1/109616),
+  * By [Neha R. Patki](https://www.linkedin.com/in/nehapatki/)
 
 # Quick starter
 

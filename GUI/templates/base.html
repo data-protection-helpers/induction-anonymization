@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>{% block title %}base{% endblock %}</title>
+        <link href="{{ url_for('static', filename='style.css', version=3.7) }}" rel="stylesheet" type="text/css"/>
+    </head>
+
+    <body>
+        <!-- Header -->
+        <header>
+            <h1>Data anonymisation</h1>
+            <nav id="nav">
+                <ul>
+                    <li><a href="home" >Data loading</a></li>
+                    <li><a href="selection">Data selection</a></li>
+                    <li><a href="synthesization">Data synthesization</a></li>
+                    <li><a href="anonymisation">Data anonymisation</a></li>
+
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Page Content -->
+        {% block content %}
+        {% endblock %}
+
+        <!-- Footer -->
+        <footer>
+
+        </footer>
+
+        <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
+
+    </body>
+</html>

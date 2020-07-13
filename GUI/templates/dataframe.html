@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+{% extends 'base.html' %}
+
+{% block title %}
+Data synthesization : Dataframe
+{% endblock %}
+
+{% block content %}
+
+<div class="page_container">
+    <div class="content">
+        <h2> {{ dataset_name }} </h2>
+        <div class="df">
+            {% for table in tables %}
+                {{titles[loop.index]}}
+                {{ table|safe }}
+            {% endfor %}
+         </div>
+    </div>
+
+
+</div>
+
+{% endblock %}
+
+
+

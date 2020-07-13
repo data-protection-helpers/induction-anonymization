@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block title %}
+Data synthesization : Data selection
+{% endblock %}
+
+{% block content %}
+<div class="page_container">
+    <h2>Data selection </h2>
+</div>
+
+<div class="page_container">
+    <div class="content">
+
+        <div class="df">
+          {% for table in tables %}
+            {{titles[loop.index]}}
+            {{ table|safe }}
+            {% endfor %}
+        </div>
+
+
+        <h2> Select columns you want to keep  </h2>
+        <h4>(select all columns for now:)</h4>
+        <form action="" method="post">
+         <select multiple class="multiselect" name="multi">
+              {% for o in titles %}
+              <option value="{{o}}">{{o}}</option>
+              {% endfor %}
+            </select>
+            <button type="submit">Ok</button>
+        </form>
+
+
+
+    </div>
+</div>
+
+{% endblock %}

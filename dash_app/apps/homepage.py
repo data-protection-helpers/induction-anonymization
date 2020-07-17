@@ -28,8 +28,7 @@ div1 = html.Div(
             column_selectable="multi",
             selected_columns=[],
             virtualization=True,
-            style_table={"height": "350px", "width": "100%", "overflowY": "auto", "overflowX": "auto",
-                         "margin": 20},
+            style_table={"height": "350px",  "marginLeft": 50, "width":"90%", "overflowY": "auto", "overflowX": "auto"},
             style_cell_conditional=[
                 {
                     "if": {"column_id": c},
@@ -44,11 +43,12 @@ div1 = html.Div(
             ],
             style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
         ),
-        html.Button(id="validate_columns", n_clicks=0, children="Submit"),
+        dbc.Button(id="validate_columns", n_clicks=0, children="Submit", color="secondary"),
+
         html.Div(id="storage_reduced_table", style={"display": "none"}),
 
-    ], style={"top": 20, "marginLeft": 300, "width": "100%%", "height": "550px", "padding":
-        "1rem 1rem", "display": "flex", "flex-direction": "column", "align-items": "center", "background-color":
+    ], style={"marginTop": 10, "marginLeft": 300,  "width": "80%", "height": "550px", "padding":
+        "2rem", "display": "flex", "flex-direction": "column", "align-items": "center", "background-color":
                   "#f8f9fa"}, id="div1",
 )
 
@@ -87,14 +87,19 @@ div2 = html.Div(
                 html.Div(id="none_output", style={"display": "none"}),
                 html.Div(id="intermediate-value2", style={"display": "none"}),
                 html.Div([
-                    html.H3("Select columns you want to synthesize", style={"text-align": "left"}),
-                    dcc.Dropdown(
-                        id="synth_dropdown",
-                        multi=True,
-                        placeholder="Select the type of anonymisation you want to perform",
-                    ),
+                            html.H3("Select columns you want to synthesize", style={"text-align": "left"}),
+                            dcc.Dropdown(
+                                id="synth_dropdown",
+                                multi=True,
+                                placeholder="Select the type of anonymisation you want to perform",
+                            ),
 
-                ], style={"marginTop": 50})
+                         ], style={"marginTop": 50, "marginBottom": 50}
+                ),
+                html.Div([
+                            dbc.Button(id="validate_anonymisation", n_clicks=0, children="Submit", color="secondary"),
+                        ], style={"display": "flex", "flex-direction": "column", "align-items": "center"}
+                )
 
             ], id="div2", style={"display": "none"}
         ),
@@ -105,7 +110,7 @@ div2 = html.Div(
 )
 
 layout = html.Div([
-    sidebar_div,
+    #sidebar_div,
     html.Div([
         div1,
         div2
@@ -156,7 +161,7 @@ def update_reduced_table(jsonified_cleaned_data):
             editable=True,
             selected_columns=[],
             virtualization=True,
-            style_table={"height": "350px", "width": 1000, "overflowY": "auto", "overflowX": "auto",
+            style_table={"height": "350px", "width": 1200, "overflowY": "auto", "overflowX": "auto",
                          "margin": 20},
             style_cell_conditional=[
                 {
@@ -185,16 +190,16 @@ def update_reduced_table(jsonified_cleaned_data):
             }
         )
 
-    ], style={"top": 20, "marginLeft": 300, "width": "100%", "height": "550px", "display": "flex",
+    ], style={ "marginLeft": 300, "width": "100%", "height": "550px", "display": "flex", "padding": "2rem",
               "flex-direction": "column", "align-items": "center", "background-color":
                   "#f8f9fa"})
 
     return html.Div([
-        sidebar_div,
+        #sidebar_div,
         html.Div([
             new_div,
             div2
-        ], style={"align-items": "flex-start", "flex-direction": "column"}
+        ], style={"display": "flex", "align-items": "flex-start", "flex-direction": "column"}
         )
     ], style={"display": "flex", "align-items": "flex-start"}, id="homepage_layout"
     ), [{"label": i, "value": i} for i in df_sample]

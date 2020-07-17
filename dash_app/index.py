@@ -5,6 +5,7 @@ import dash_bootstrap_components as dbc
 from apps import homepage, synthetic_data
 from app import app
 from components import sidebar
+import dash
 
 
 app.layout = html.Div([
@@ -17,8 +18,32 @@ app.layout = html.Div([
                 id="hiddendata",
                 style={"display": "none"},
         ),
+    html.Div([
+                dcc.Store(id='storage_button', storage_type="local", clear_data=True)
+            ],
+
+    ),
+
 ],  style={"display": "flex", "align-items": "flex-start"}
 )
+
+@app.callback(
+    Output("url", "pathname"),
+    [Input("storage_button", "data")]
+)
+def redirect_synthetic_data_page(data):
+    if data != 0 and data is not None:
+        return "/synthetic_data"
+    return "/"
+
+
+@app.callback(
+    Output("storage_button", "data"),
+    [Input("validate_anonymisation", "n_clicks")],
+)
+def store_button(n_clicks):
+    if n_clicks != 0:
+        return n_clicks
 
 
 @app.callback(

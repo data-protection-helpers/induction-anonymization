@@ -51,7 +51,7 @@ Donec id elit non mi porta gravida at eget metus.Fusce dapibus, tellus ac cursus
 
 
 layout = html.Div([
-    sidebar_div,
+    #sidebar_div,
     header,
     body,
 ])

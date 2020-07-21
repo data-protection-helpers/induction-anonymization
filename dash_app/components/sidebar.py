@@ -13,7 +13,9 @@ sidebar_div = html.Div(
         dbc.Nav(
             [
                 dbc.NavLink("Home", href="/", id="app_link"),
+                dbc.NavLink("Classification", href="/classification", id="classification_link"),
                 dbc.NavLink("Synthetic data", href="/synthetic_data", id="synthetic_data_link"),
+                dbc.NavLink("Results", href="/results", id="results_link"),
             ],
             vertical=True,
             pills=True,
@@ -21,7 +23,6 @@ sidebar_div = html.Div(
 
     ],
     style={"position": "fixed", "top": 0, "left": 0, "bottom": 0, "width": "18rem", "padding": "2rem 1rem",
-           "background-color": "#f8f9fa",
-}
+           "background-color": "#f8f9fa"}
 )
 

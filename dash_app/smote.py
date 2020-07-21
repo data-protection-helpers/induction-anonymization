@@ -147,11 +147,11 @@ def treatment(df_sample, categorical_fields):
     df_gen = Mod.generate_data(k)
     df_gen_num = numerical_to_categorical(df_gen, categorical_fields, transitional_dfs)
     res = Closeness(df_sample_num, df_gen)
-    figure = res.pearson_plot()
+    fig_gen, fig_init = res.pearson_plot()
 
     # SAVE_PATH = Path('/static/images')
     #figure.savefig(SAVE_PATH / "pearson.png")
     # res.variables_scatter_plot()
     # res.compare_distributions()
 
-    return figure, df_gen_num
+    return fig_gen, fig_init, df_gen_num

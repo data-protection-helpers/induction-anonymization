@@ -57,23 +57,24 @@ layout = html.Div(
 
 
 @app.callback(
-    [Output("storage_pearson_graph", "data"),
+    [Output("storage_pearson_graph_gen", "data"),
+     Output("storage_pearson_graph_init", "data"),
      Output("storage_generated_table", "data")],
     [Input("smote_button", "n_clicks"),
      Input("storage_synth_col", "data"),
      Input("storage_types", "data"),
      Input("storage_sample_df", "data")]
 )
-def store(n_clicks, data, types, jsonified_cleaned_data):
+def store_generated_df_information(n_clicks, data, types, jsonified_cleaned_data):
     df_sample = pd.read_json(jsonified_cleaned_data, orient="split")
     if n_clicks != 0:
         categorical_columns = []
         for col in data:
             if types[col] == "Categorical":
                 categorical_columns.append(col)
-        figure, df_gen = treatment(df_sample[data], categorical_columns)
+        fig_gen, fig_init, df_gen = treatment(df_sample[data], categorical_columns)
 
-        return figure, df_gen.to_json(date_format="iso", orient="split")
+        return fig_gen, fig_init, df_gen.to_json(date_format="iso", orient="split")
 
     return {
                "data": [

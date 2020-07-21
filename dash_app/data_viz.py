@@ -34,6 +34,7 @@ class Closeness:
             for index2, col2 in enumerate(self.initial_df.columns):
                 self.correlations["initial"][index1, index2] = \
                 pearsonr(self.initial_df[col1].to_numpy(), self.initial_df[col2].to_numpy())[0]
+
         # pariwise coefficients for generated data
         for index1, col1 in enumerate(self.generated_df.columns):
             for index2, col2 in enumerate(self.generated_df.columns):
@@ -77,7 +78,6 @@ class Closeness:
         Computes a 2D heatmap of pairwise Pearson correlations
         """
 
-
         # computing correlation matrices
         self.computes_correlations()
 
@@ -88,15 +88,23 @@ class Closeness:
         # computing heatmaps
         hmap1, hmap2 = self.correlations["initial"], self.correlations["generated"]
 
-        fig = go.Figure(
+        fig_init = go.Figure(
             {
-                "data": [go.Heatmap(x=absc2, y=ordo2, z=hmap2, colorscale='RdBu')],
-                "layout": go.Layout(title=go.layout.Title(text= "Pearson Plot")),
+                "data": [go.Heatmap(x=absc1, y=ordo1, z=hmap1, colorscale='RdBu')],
+                "layout": go.Layout(title=go.layout.Title(text="Initial dataframe")),
             }
         )
-        fig.update_yaxes(automargin=True)
 
-        return fig
+        fig_gen = go.Figure(
+            {
+                "data": [go.Heatmap(x=absc2, y=ordo2, z=hmap2, colorscale='RdBu')],
+                "layout": go.Layout(title=go.layout.Title(text="Generated dataframe")),
+            }
+        )
+        fig_gen.update_yaxes(automargin=True)
+        fig_init.update_yaxes(automargin=True)
+
+        return fig_gen, fig_init
 
     def variables_scatter_plot(self):
 

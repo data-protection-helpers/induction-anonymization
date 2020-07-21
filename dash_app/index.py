@@ -16,11 +16,12 @@ app.layout = html.Div(
         html.Div(
             [
                 dcc.Store(id="storage_button_sample_df", storage_type="local", clear_data=True),
-                dcc.Store(id="storage_button", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_button_anonymisation", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_synth_col", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_types", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_sample_df", storage_type="local", clear_data=True),
-                dcc.Store(id="storage_pearson_graph", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_pearson_graph_gen", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_pearson_graph_init", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_generated_table", storage_type="local", clear_data=True),
             ],
             id="hidden_data",
@@ -34,7 +35,7 @@ app.layout = html.Div(
 
 @app.callback(
     Output("url", "pathname"),
-    [Input("storage_button", "data"), Input("storage_button_sample_df", "data")]
+    [Input("storage_button_anonymisation", "data"), Input("storage_button_sample_df", "data")]
 )
 def redirect_data_page(data1, data2):
     if data1 != 0 and data1 is not None:

@@ -22,7 +22,7 @@ div_initial = html.Div(
         ),
 
         dash_table.DataTable(
-            id="initial_table3",
+            id="initial_table_res",
             data=df.to_dict("records"),
             column_selectable="single",
             editable=True,
@@ -63,7 +63,7 @@ div_generated = html.Div(
         ),
 
         dash_table.DataTable(
-            id="generated_table3",
+            id="generated_table_res",
             column_selectable="single",
             editable=True,
             selected_columns=[],
@@ -97,8 +97,15 @@ div_generated = html.Div(
 
 div_graph1 = html.Div(
     [
-        html.H2("Graph 1"),
-        dcc.Graph(id="graph_test", style={"width": "45%"})
+        html.H2("Pearson Plot"),
+        html.Div(
+            [
+                dcc.Graph(id="pearson_init", style={"width": "50%", "textAlign": "center"}),
+                dcc.Graph(id="pearson_gen", style={"width": "50%", "textAlign": "center"})
+            ],
+            style={"display": "flex", "flex-direction": "row", "width":"100%"}
+        )
+
     ],
     style={"marginLeft": 300, "marginTop": 10, "width": "78%", "height": "550px", "display": "flex", "padding": "2rem",
            "flex-direction": "column", "align-items": "center", "background-color": "#f8f9fa"}
@@ -115,25 +122,32 @@ layout = html.Div(
 
 
 @app.callback(
-    Output("graph_test", "figure"),
-    [Input("storage_pearson_graph", "data")]
+    Output("pearson_gen", "figure"),
+    [Input("storage_pearson_graph_gen", "data")]
 )
-def fi(data):
+def store_generated_pearson_plot(data):
+    return data
+
+@app.callback(
+    Output("pearson_init", "figure"),
+    [Input("storage_pearson_graph_init", "data")]
+)
+def store_initial_pearson_plot(data):
     return data
 
 
 @app.callback(
-    [Output("generated_table3", "columns"),
-     Output("generated_table3", "data")],
-    [Input("storage_sample_df", "data")]
+    [Output("generated_table_res", "columns"),
+     Output("generated_table_res", "data")],
+    [Input("storage_generated_table", "data")]
 )
-def f(jsonified_data):
+def update_initial_table(jsonified_data):
     df_gen = pd.read_json(jsonified_data, orient="split")
     col_gen = [{"name": i, "id": i, "selectable": True} for i in df_gen.columns],
     return col_gen[0], df_gen.to_dict("records")
 
 @app.callback(
-    Output("initial_table3", "columns"),
+    Output("initial_table_res", "columns"),
     [Input("storage_sample_df", "data")]
 )
 def update_reduced_table(jsonified_cleaned_data1):

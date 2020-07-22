@@ -51,9 +51,8 @@ div_sample_df = html.Div(
         )
 
     ],
-    style={"marginTop": 10, "marginLeft": 300,  "width": "78%", "height": "550px", "padding": "2rem",
-                              "display": "flex", "flex-direction": "column", "align-items": "center", "background-color"
-                              : "#f8f9fa"}
+    style={"marginTop": 10, "marginLeft": 300,  "width": "78%", "height": "550px", "padding": "2rem", "display": "flex",
+           "flex-direction": "column", "align-items": "center", "background-color": "#f8f9fa"}
 )
 
 
@@ -101,7 +100,7 @@ div_classification = html.Div(
                 ),
                 html.Div(
                     [
-                        dbc.Button(id="validate_anonymisation", n_clicks=0, children="Submit", color="secondary"),
+                        dbc.Button(id="validate_anonymisation", n_clicks=0, children="Submit", color="secondary", href="/synthetic_data"),
                     ], style={"display": "flex", "flex-direction": "column", "align-items": "center"}
                 )
             ],
@@ -128,7 +127,7 @@ layout = html.Div(
     [Input("storage_sample_df", "data"), Input("intermediate-value2", "children")]
 )
 def update_sample_df(jsonified_cleaned_data1, jsonified_cleaned_data2):
-    if jsonified_cleaned_data2 != None:
+    if jsonified_cleaned_data2 is not None:
         col = json.loads(jsonified_cleaned_data2)
         return col
     df_sample = pd.read_json(jsonified_cleaned_data1, orient="split")
@@ -137,14 +136,14 @@ def update_sample_df(jsonified_cleaned_data1, jsonified_cleaned_data2):
 
 
 @app.callback(
-    [Output("storage_button_anonymisation", "data"),
-     Output("storage_synth_col", "data"),
+    [Output("storage_synth_col", "data"),
      Output("storage_types", "data")],
     [Input("validate_anonymisation", "n_clicks"), Input("synth_dropdown", "value")],
 )
 def store_anonymisation_information(n_clicks, content):
     if n_clicks != 0:
-        return n_clicks, content, df_sample_types
+        return content, df_sample_types
+    return None, None
 
 @app.callback(
     Output("synth_dropdown", "options"),
@@ -177,15 +176,19 @@ def print_new_guideline(selected_columns):
      Input("df_sample", "columns")]
 )
 def store_attribute_types(value, selected_columns, columns):
-    if len(selected_columns) > 0:
+    print("sel", selected_columns)
+    if selected_columns is not None and len(selected_columns) > 0 and value is not None:
         col = []
         for i in columns:
             if i["name"] != selected_columns[0]:
                 col.append(i)
             else:
                 col.append({"name": selected_columns[0], "id": selected_columns[0], "type": value, "selectable": True})
+                print("sel2", selected_columns[0])
+                print("val", value)
                 df_sample_types[selected_columns[0]] = matching_types[value]
 
         return json.dumps(col)
+    return None
 
 

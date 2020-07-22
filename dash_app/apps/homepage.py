@@ -34,7 +34,7 @@ div_initial_df = html.Div(
             ],
             style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
         ),
-        dbc.Button(id="validate_columns", n_clicks=0, children="Submit", color="secondary"),
+        dbc.Button(id="validate_columns", n_clicks=0, children="Submit", color="secondary", href="/classification"),
 
     ],
     id="div_initial_df",
@@ -42,18 +42,20 @@ div_initial_df = html.Div(
            "flex-direction": "column", "align-items": "center", "background-color": "#f8f9fa"}
 )
 
+
+
+
 layout = html.Div(
     [
         div_initial_df,
     ],
     id="homepage_layout",
-    style={"display": "flex", "align-items": "flex-start"},
+    style={"display": "flex", "flex-direction": "column"},
 )
 
 
 @app.callback(
-    [Output("storage_button_sample_df", "data"),
-     Output("storage_sample_df", "data")],
+    Output("storage_sample_df", "data"),
     [Input("initial_table", "selected_columns"),
      Input("validate_columns", "n_clicks")]
 )
@@ -61,7 +63,9 @@ def store_reduced_data_information(selected_columns, n_clicks):
     changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
     if "validate_columns" in changed_id:
         df_sample = df[selected_columns]
-        return n_clicks, df_sample.to_json(date_format="iso", orient="split")
+        return df_sample.to_json(date_format="iso", orient="split")
+    return None
+
 
 
 if __name__ == "__main__":

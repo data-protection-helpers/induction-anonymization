@@ -90,14 +90,14 @@ class Closeness:
 
         fig_init = go.Figure(
             {
-                "data": [go.Heatmap(x=absc1, y=ordo1, z=hmap1, colorscale='RdBu')],
+                "data": [go.Heatmap(x=absc1, y=ordo1, z=hmap1, colorscale='RdBu', zmid=0)],
                 "layout": go.Layout(title=go.layout.Title(text="Initial dataframe")),
             }
         )
 
         fig_gen = go.Figure(
             {
-                "data": [go.Heatmap(x=absc2, y=ordo2, z=hmap2, colorscale='RdBu')],
+                "data": [go.Heatmap(x=absc2, y=ordo2, z=hmap2, colorscale='RdBu', zmid=0)],
                 "layout": go.Layout(title=go.layout.Title(text="Generated dataframe")),
             }
         )

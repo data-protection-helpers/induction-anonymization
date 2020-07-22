@@ -7,16 +7,14 @@ from app import app
 from components import sidebar
 import dash
 
-
 app.layout = html.Div(
     [
         sidebar.sidebar_div,
         dcc.Location(id="url", refresh=False),
-        html.Div(id="page-content" ),
+        html.Div(id="page-content"),
         html.Div(
             [
-                dcc.Store(id="storage_button_sample_df", storage_type="local", clear_data=True),
-                dcc.Store(id="storage_button_anonymisation", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_button_sample_df", clear_data=True),
                 dcc.Store(id="storage_synth_col", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_types", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_sample_df", storage_type="local", clear_data=True),
@@ -27,22 +25,12 @@ app.layout = html.Div(
             id="hidden_data",
             style={"display": "none"},
         ),
+        dbc.Button(id="smote_button", n_clicks=0, children="Synthesize", color="secondary", href="/results", style={"display": "none"})
+
 
     ],  style={"display": "flex", "align-items": "flex-start"}
 )
 
-
-
-@app.callback(
-    Output("url", "pathname"),
-    [Input("storage_button_anonymisation", "data"), Input("storage_button_sample_df", "data")]
-)
-def redirect_data_page(data1, data2):
-    if data1 != 0 and data1 is not None:
-        return "/synthetic_data"
-    elif data2 != 0 and data2 is not None:
-        return "/classification"
-    return "/"
 
 
 @app.callback(
@@ -68,6 +56,7 @@ def render_page_content(pathname):
 
     elif pathname == "/results":
         return results.layout
+
 
     elif pathname == "/synthetic_data":
         return synthetic_data.layout

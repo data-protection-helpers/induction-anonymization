@@ -6,7 +6,9 @@ import dash_table
 import pandas as pd
 from app import app
 from smote import treatment
+import plotly.graph_objects as go
 import dash
+
 
 
 df = pd.read_csv("../data/statistical-generative-modeling-sample.csv.bz2")
@@ -24,10 +26,11 @@ div_content_synth = html.Div(
                             """Donec id elit non mi porta gravida at eget metus.Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentumnibh, ut fermentum massa justo sit amet risus. Etiam porta semmalesuada magna mollis euismod. Donec sed odio dui. Donec id elit nonmi porta gravida at eget metus. Fusce dapibus, tellus ac cursuscommodo, tortor mauris condimentum nibh, ut fermentum massa justo sitamet risus. Etiam porta sem malesuada magna mollis euismod. Donec sedodio dui."""),
                         html.Div(
                             [
-                                dbc.Button(id="smote_button", n_clicks=0, children="Synthesize", color="secondary", ),
+                                dbc.Button(id="smote_button", n_clicks=0, children="Synthesize", color="secondary", href="/results"),
                             ],
                             style={"display": "flex", "flex-direction": "column", "align-items": "center"}
-                        )
+                        ),
+
                     ],
                     style={"display": "flex", "flex-direction": "column", "width": 650}),
 
@@ -56,6 +59,7 @@ layout = html.Div(
 )
 
 
+
 @app.callback(
     [Output("storage_pearson_graph_gen", "data"),
      Output("storage_pearson_graph_init", "data"),
@@ -66,8 +70,9 @@ layout = html.Div(
      Input("storage_sample_df", "data")]
 )
 def store_generated_df_information(n_clicks, data, types, jsonified_cleaned_data):
-    df_sample = pd.read_json(jsonified_cleaned_data, orient="split")
     if n_clicks != 0:
+        df_sample = pd.read_json(jsonified_cleaned_data, orient="split")
+
         categorical_columns = []
         for col in data:
             if types[col] == "Categorical":
@@ -75,12 +80,7 @@ def store_generated_df_information(n_clicks, data, types, jsonified_cleaned_data
         fig_gen, fig_init, df_gen = treatment(df_sample[data], categorical_columns)
 
         return fig_gen, fig_init, df_gen.to_json(date_format="iso", orient="split")
+    return None, None, None
 
-    return {
-               "data": [
-               ],
-               "layout": {
-                   "title": "Dash Data Visualization"
-               }
-           },
+
 

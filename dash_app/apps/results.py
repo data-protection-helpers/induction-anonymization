@@ -24,9 +24,6 @@ div_initial = html.Div(
         dash_table.DataTable(
             id="initial_table_res",
             data=df.to_dict("records"),
-            column_selectable="single",
-            editable=True,
-            selected_columns=[],
             virtualization=True,
             style_table={"height": "350px", "marginLeft": 70, "marginRight": 70, "width": 1500, "overflowY": "auto",
                          "overflowX": "auto"},
@@ -64,9 +61,7 @@ div_generated = html.Div(
 
         dash_table.DataTable(
             id="generated_table_res",
-            column_selectable="single",
-            editable=True,
-            selected_columns=[],
+
             virtualization=True,
             style_table={"height": "350px", "marginLeft": 70, "marginRight": 70, "width": 1500, "overflowY": "auto",
                          "overflowX": "auto"},
@@ -100,8 +95,14 @@ div_graph1 = html.Div(
         html.H2("Pearson Plot"),
         html.Div(
             [
-                dcc.Graph(id="pearson_init", style={"width": "50%", "textAlign": "center"}),
-                dcc.Graph(id="pearson_gen", style={"width": "50%", "textAlign": "center"})
+                dcc.Graph(
+                    id="pearson_init",
+                    style={"width": "50%", "textAlign": "center"},
+                    figure={'data': [], 'layout': {'title': 'Initial dataframe'}}
+                ),
+                dcc.Graph(
+                    id="pearson_gen",
+                    style={"width": "50%", "textAlign": "center"})
             ],
             style={"display": "flex", "flex-direction": "row", "width":"100%"}
         )
@@ -117,7 +118,8 @@ layout = html.Div(
         div_generated,
         div_graph1
     ],
-    style={"display": "flex", "flex-direction": "column"}
+    style={"display": "flex", "flex-direction": "column"},
+    id="results_layout"
 )
 
 
@@ -126,14 +128,18 @@ layout = html.Div(
     [Input("storage_pearson_graph_gen", "data")]
 )
 def store_generated_pearson_plot(data):
-    return data
+    if data is not None:
+        return data
+    return {'data': [], 'layout': {'title': 'Initial dataframe'}}
 
 @app.callback(
     Output("pearson_init", "figure"),
     [Input("storage_pearson_graph_init", "data")]
 )
 def store_initial_pearson_plot(data):
-    return data
+    if data is not None:
+        return data
+    return {'data': [], 'layout': {'title': 'Initial dataframe'}}
 
 
 @app.callback(

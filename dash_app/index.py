@@ -2,7 +2,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
-from apps import homepage, synthetic_data, results, classification
+from apps import homepage, synthetic_data, results, classification, visualization
 from app import app
 from components import sidebar
 import dash
@@ -34,17 +34,23 @@ app.layout = html.Div(
 
 
 @app.callback(
-    [Output(f"synthetic_data_link", "active"), Output(f"app_link", "active"), Output(f"results_link", "active"), Output(f"classification_link", "active")],
+    [Output(f"synthetic_data_link", "active"),
+     Output(f"app_link", "active"),
+     Output(f"results_link", "active"),
+     Output(f"classification_link", "active"),
+     Output(f"visualization_link", "active")],
     [Input("url", "pathname")]
 )
 def toggle_active_links(pathname):
     if pathname == "/":
-        return False, True, False, False
+        return False, True, False, False, False
     elif pathname == "/synthetic_data":
-        return True, False, False, False
+        return True, False, False, False, False
     elif pathname == "/results":
-        return False, False, True, False
-    return False, False, False, True
+        return False, False, True, False, False
+    elif pathname == "/classification":
+        return False, False, False, True, False
+    return False, False, False, False, True
 
 
 @app.callback(
@@ -63,6 +69,9 @@ def render_page_content(pathname):
 
     elif pathname == "/classification":
         return classification.layout
+
+    elif pathname == "/visualization":
+        return visualization.layout
 
     else:
         return dbc.Jumbotron(

@@ -11,7 +11,7 @@ import pandas as pd
 
 
 df = pd.read_csv("../data/statistical-generative-modeling-sample.csv.bz2")
-df = df[:500]
+df = df[:100]
 
 
 div_initial = html.Div(
@@ -107,7 +107,7 @@ layout = html.Div(
 @app.callback(
     [Output("generated_table_res", "columns"),
      Output("generated_table_res", "data")],
-    [Input("storage_generated_table", "data")]
+    [Input("storage_generated_table_cat", "data")]
 )
 def update_initial_table(jsonified_data):
     df_gen = pd.read_json(jsonified_data, orient="split")

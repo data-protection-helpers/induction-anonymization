@@ -137,21 +137,33 @@ class smote_model(Model):
         return self.df_gen
 
 
-def treatment(df_sample, categorical_fields):
-
+def numerical_data(df_sample, categorical_fields):
     df_sample_num, transitional_dfs = categorical_to_numerical(df_sample, categorical_fields)
 
     Mod = smote_model(df_sample_num)
+
     # number of neighbors
-    k=5
-    df_gen = Mod.generate_data(k)
-    df_gen_num = numerical_to_categorical(df_gen, categorical_fields, transitional_dfs)
-    res = Closeness(df_sample_num, df_gen)
-    fig_gen, fig_init = res.pearson_plot()
+    k = 5
+    df_gen_num = Mod.generate_data(k)
+
+    return df_gen_num, df_sample_num, transitional_dfs
+
+
+def treatment(df_gen_num, df_sample_num, transitional_dfs, categorical_fields):
+
+    df_gen_cat = numerical_to_categorical(df_gen_num, categorical_fields, transitional_dfs)
+    res = Closeness(df_sample_num, df_gen_num)
+    fig_pearson_gen, fig_pearson_init = res.pearson_plot()
+
+    #fig_plot_gen, fig_plot_init = res.variables_scatter_plot()
 
     # SAVE_PATH = Path('/static/images')
     #figure.savefig(SAVE_PATH / "pearson.png")
     # res.variables_scatter_plot()
     # res.compare_distributions()
 
-    return fig_gen, fig_init, df_gen_num
+    return fig_pearson_gen, fig_pearson_init, df_gen_cat
+
+
+#def computes_plot_graph(df_sample, categorical_fields):
+

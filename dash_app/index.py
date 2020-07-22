@@ -20,7 +20,9 @@ app.layout = html.Div(
                 dcc.Store(id="storage_sample_df", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_pearson_graph_gen", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_pearson_graph_init", storage_type="local", clear_data=True),
-                dcc.Store(id="storage_generated_table", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_generated_table_cat", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_generated_table_num", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_sample_df_num", storage_type="local", clear_data=True),
             ],
             id="hidden_data",
             style={"display": "none"},
@@ -30,7 +32,6 @@ app.layout = html.Div(
 
     ],  style={"display": "flex", "align-items": "flex-start"}
 )
-
 
 
 @app.callback(
@@ -62,7 +63,6 @@ def render_page_content(pathname):
 
     elif pathname == "/results":
         return results.layout
-
 
     elif pathname == "/synthetic_data":
         return synthetic_data.layout

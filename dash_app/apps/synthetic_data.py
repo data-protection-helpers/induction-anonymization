@@ -5,14 +5,14 @@ from dash.dependencies import Input, Output, State
 import dash_table
 import pandas as pd
 from app import app
-from smote import treatment
+from smote import treatment, numerical_data
 import plotly.graph_objects as go
 import dash
 
 
 
 df = pd.read_csv("../data/statistical-generative-modeling-sample.csv.bz2")
-df = df[:500]
+df = df[:100]
 
 div_content_synth = html.Div(
     [
@@ -63,7 +63,9 @@ layout = html.Div(
 @app.callback(
     [Output("storage_pearson_graph_gen", "data"),
      Output("storage_pearson_graph_init", "data"),
-     Output("storage_generated_table", "data")],
+     Output("storage_generated_table_cat", "data"),
+     Output("storage_generated_table_num", "data"),
+     Output("storage_sample_df_num", "data")],
     [Input("smote_button", "n_clicks"),
      Input("storage_synth_col", "data"),
      Input("storage_types", "data"),
@@ -77,10 +79,14 @@ def store_generated_df_information(n_clicks, data, types, jsonified_cleaned_data
         for col in data:
             if types[col] == "Categorical":
                 categorical_columns.append(col)
-        fig_gen, fig_init, df_gen = treatment(df_sample[data], categorical_columns)
 
-        return fig_gen, fig_init, df_gen.to_json(date_format="iso", orient="split")
-    return None, None, None
+        df_gen_num, df_sample_num, transitional_dfs = numerical_data(df_sample[data],  categorical_columns)
+        fig_gen, fig_init, df_gen_cat = treatment(df_gen_num, df_sample_num, transitional_dfs, categorical_columns)
+
+        return fig_gen, fig_init, df_gen_cat.to_json(date_format="iso", orient="split"), \
+               df_gen_num.to_json(date_format="iso", orient="split"), df_sample_num.to_json(date_format="iso", orient="split")
+
+    return None, None, None, None, None
 
 
 

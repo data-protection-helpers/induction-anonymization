@@ -77,5 +77,6 @@ def numerical_to_categorical(df, categorical_fields, transitional_dfs):
             for index2, row2 in transitional_dfs[categorical_field + "_NUM"].iterrows():
                 if row2["interval_down"] <= df[categorical_field + "_NUM"][index] <= row2["interval_up"]:
                     discrete_value = row2["unique_values"]
-            df_final.loc[index, categorical_field + "_NUM"] = discrete_value
+            df_final.loc[index, categorical_field] = discrete_value
+        del df_final[categorical_field + "_NUM"]
     return df_final

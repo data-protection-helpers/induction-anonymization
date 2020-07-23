@@ -8,12 +8,15 @@ import json
 from app import app
 
 import pandas as pd
+
 df = pd.read_csv("../data/statistical-generative-modeling-sample.csv.bz2")
 df = df[:100]
 
-
 matching_types = {"numeric": "Numerical", "text": "Categorical", "datetime": "Other"}
 df_sample_types = {}
+
+global glob_col
+glob_col=[]
 
 
 div_sample_df = html.Div(
@@ -25,11 +28,11 @@ div_sample_df = html.Div(
         dash_table.DataTable(
             id="df_sample",
             data=df.to_dict("records"),
-            column_selectable="single",
+            column_selectable="multi",
             editable=True,
             selected_columns=[],
             virtualization=True,
-            style_table={"height": "350px",  "marginLeft": 70, "marginRight": 70, "width":1500, "overflowY": "auto",
+            style_table={"height": "350px", "marginLeft": 70, "marginRight": 70, "width": 1500, "overflowY": "auto",
                          "overflowX": "auto"},
             style_cell_conditional=[{"if": {"column_id": c}, "textAlign": "left"} for c in ["Date", "Region"]],
             style_data_conditional=[
@@ -51,10 +54,9 @@ div_sample_df = html.Div(
         )
 
     ],
-    style={"marginTop": 10, "marginLeft": 300,  "width": "78%", "height": "550px", "padding": "2rem", "display": "flex",
+    style={"marginTop": 10, "marginLeft": 300, "width": "78%", "height": "550px", "padding": "2rem", "display": "flex",
            "flex-direction": "column", "align-items": "center", "background-color": "#f8f9fa"}
 )
-
 
 div_classification = html.Div(
     [
@@ -87,6 +89,8 @@ div_classification = html.Div(
                 ),
                 html.Div(id="none_output", style={"display": "none"}),
                 html.Div(id="intermediate-value2", style={"display": "none"}),
+                html.Div(id="selection_done", style={"display": "none"}),
+                html.Div(id="selection", style={"display": "none"}),
                 html.Div(
                     [
                         html.H3("Select columns you want to synthesize", style={"text-align": "left"}),
@@ -100,7 +104,8 @@ div_classification = html.Div(
                 ),
                 html.Div(
                     [
-                        dbc.Button(id="validate_anonymisation", n_clicks=0, children="Submit", color="secondary", href="/synthetic_data"),
+                        dbc.Button(id="validate_anonymisation", n_clicks=0, children="Submit", color="secondary",
+                                   href="/synthetic_data"),
                     ], style={"display": "flex", "flex-direction": "column", "align-items": "center"}
                 )
             ],
@@ -108,7 +113,7 @@ div_classification = html.Div(
             style={"display": "none"}
         ),
     ],
-    style={"marginTop": 10, "marginLeft": 300,  "width": "78%", "height": "550px", "padding": "2rem", "display": "flex",
+    style={"marginTop": 10, "marginLeft": 300, "width": "78%", "height": "550px", "padding": "2rem", "display": "flex",
            "flex-direction": "column", "background-color": "#f8f9fa"}
 
 )
@@ -122,17 +127,22 @@ layout = html.Div(
 )
 
 
+
 @app.callback(
-    Output("df_sample", "columns"),
-    [Input("storage_sample_df", "data"), Input("intermediate-value2", "children")]
+    [Output("type_dropdown", "value"),
+     Output("df_sample", "selected_columns"),
+     Output("df_sample", "columns"),
+     Output("selection_done", "children")],
+    [Input("intermediate-value2", "children"), Input("selection", "children")]
 )
-def update_sample_df(jsonified_cleaned_data1, jsonified_cleaned_data2):
+def update_sample_df(jsonified_cleaned_data2, selection):
     if jsonified_cleaned_data2 is not None:
         col = json.loads(jsonified_cleaned_data2)
-        return col
-    df_sample = pd.read_json(jsonified_cleaned_data1, orient="split")
-    col = [{"name": i, "id": i, "selectable": True} for i in df_sample],
-    return col[0]
+        return None, [], col, True
+    if selection is None:
+        return None, [], glob_col, False
+    else:
+        return None, selection, glob_col, False
 
 
 @app.callback(
@@ -145,13 +155,23 @@ def store_anonymisation_information(n_clicks, content):
         return content, df_sample_types
     return None, None
 
+
 @app.callback(
     Output("synth_dropdown", "options"),
     [Input("storage_sample_df", "data")]
 )
 def update_synthesization_dropdown(jsonified_cleaned_data):
     df_sample = pd.read_json(jsonified_cleaned_data, orient="split")
+    for i in df_sample:
+        glob_col.append({"name": i, "id": i, "selectable": True})
     return [{"label": i, "value": i} for i in df_sample]
+
+@app.callback(
+    Output("selection", "children"),
+    [Input("df_sample", "selected_columns")]
+)
+def columns_selected(children):
+    return children
 
 @app.callback(
     [Output("guideline2", "children"),
@@ -161,34 +181,33 @@ def update_synthesization_dropdown(jsonified_cleaned_data):
     [Input("df_sample", "selected_columns")]
 )
 def print_new_guideline(selected_columns):
-    if len(selected_columns) == 0:
+    if selected_columns is None or len(selected_columns) == 0:
         new_guideline2 = "Selected column:"
-        return new_guideline2, True, True, {}
+        return new_guideline2, True, True, {},
     else:
-        new_guideline2 = "Selected column: " + str(selected_columns[0])
+        new_guideline2 = "Selected columns: " + ", ".join(selected_columns)
     return new_guideline2, False, False, {}
 
 
 @app.callback(
     Output("intermediate-value2", "children"),
     [Input("type_dropdown", "value"),
-     Input("df_sample", "selected_columns"),
-     Input("df_sample", "columns")]
+     Input("df_sample", "selected_columns")]
 )
-def store_attribute_types(value, selected_columns, columns):
-    print("sel", selected_columns)
+def store_attribute_types(value, selected_columns):
     if selected_columns is not None and len(selected_columns) > 0 and value is not None:
         col = []
-        for i in columns:
-            if i["name"] != selected_columns[0]:
-                col.append(i)
+        for i, column in enumerate(glob_col):
+            if column["name"] not in selected_columns:
+                col.append(column)
             else:
-                col.append({"name": selected_columns[0], "id": selected_columns[0], "type": value, "selectable": True})
-                print("sel2", selected_columns[0])
-                print("val", value)
-                df_sample_types[selected_columns[0]] = matching_types[value]
+                col.append({"name": column["name"], "id": column["name"], "type": value, "selectable": True})
 
-        return json.dumps(col)
+                df_sample_types[column["name"]] = matching_types[value]
+                glob_col[i] = {"name": column["name"], "id": column["name"], "type": value, "selectable": True}
+
+        return json.dumps(glob_col)
+
     return None
 
 

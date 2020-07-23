@@ -2,10 +2,17 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
+
 from apps import homepage, synthetic_data, results, classification, visualization
 from app import app
 from components import sidebar
 import dash
+
+
+
+
+
+
 
 app.layout = html.Div(
     [
@@ -14,15 +21,24 @@ app.layout = html.Div(
         html.Div(id="page-content"),
         html.Div(
             [
-                dcc.Store(id="storage_button_sample_df", clear_data=True),
+                # from homepage
+                dcc.Store(id="storage_sample_df", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_button_sample_df", storage_type="local", clear_data=True),
+
+                # from classification
+                dcc.Store(id="storage_updated_columns", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_selected_columns", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_synth_col", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_types", storage_type="local", clear_data=True),
-                dcc.Store(id="storage_sample_df", storage_type="local", clear_data=True),
+
+                # from synthetic_data
                 dcc.Store(id="storage_pearson_graph_gen", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_pearson_graph_init", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_generated_table_cat", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_generated_table_num", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_sample_df_num", storage_type="local", clear_data=True),
+
+
             ],
             id="hidden_data",
             style={"display": "none"},

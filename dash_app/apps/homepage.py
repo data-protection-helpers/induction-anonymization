@@ -43,8 +43,6 @@ div_initial_df = html.Div(
 )
 
 
-
-
 layout = html.Div(
     [
         div_initial_df,

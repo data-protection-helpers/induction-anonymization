@@ -71,10 +71,9 @@ layout = html.Div(
      Input("storage_types", "data"),
      Input("storage_sample_df", "data")]
 )
-def store_generated_df_information(n_clicks, data, types, jsonified_cleaned_data):
+def store_generated_df_information(n_clicks, data, types, jsonified_df_sample):
     if n_clicks != 0:
-        df_sample = pd.read_json(jsonified_cleaned_data, orient="split")
-
+        df_sample = pd.read_json(jsonified_df_sample, orient="split")
         categorical_columns = []
         for col in data:
             if types[col] == "Categorical":

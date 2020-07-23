@@ -14,9 +14,8 @@ df = df[:100]
 
 matching_types = {"numeric": "Numerical", "text": "Categorical", "datetime": "Other"}
 df_sample_types = {}
-
-global glob_col
-glob_col=[]
+global glob_sample_df
+glob_sample_df = []
 
 
 div_sample_df = html.Div(
@@ -62,7 +61,7 @@ div_classification = html.Div(
     [
         html.Div(
             [
-                html.H3("", id="guideline2", style={"text-align": "left"}),
+                html.H3("", id="guideline_selected_columns", style={"text-align": "left"}),
             ]
         ),
         html.Div(
@@ -87,10 +86,7 @@ div_classification = html.Div(
                     ],
                     placeholder="Select the type of anonymisation you want to perform",
                 ),
-                html.Div(id="none_output", style={"display": "none"}),
-                html.Div(id="intermediate-value2", style={"display": "none"}),
-                html.Div(id="selection_done", style={"display": "none"}),
-                html.Div(id="selection", style={"display": "none"}),
+
                 html.Div(
                     [
                         html.H3("Select columns you want to synthesize", style={"text-align": "left"}),
@@ -110,7 +106,7 @@ div_classification = html.Div(
                 )
             ],
             id="div2",
-            style={"display": "none"}
+
         ),
     ],
     style={"marginTop": 10, "marginLeft": 300, "width": "78%", "height": "550px", "padding": "2rem", "display": "flex",
@@ -127,24 +123,45 @@ layout = html.Div(
 )
 
 
+# sets synthesization dropdown options and global sample dataframe based on selected columns from homepage
+@app.callback(
+    Output("synth_dropdown", "options"),
+    [Input("storage_sample_df", "data")]
+)
+def classification_page_initialization(jsonified_df_sample):
+    df_sample = pd.read_json(jsonified_df_sample, orient="split")
 
+    # builds global sample dataframe
+    for i in df_sample:
+        glob_sample_df.append({"name": i, "id": i, "selectable": True})
+
+    # returns options for synthesization dropdown
+    return [{"label": i, "value": i} for i in df_sample]
+
+
+# updates the sample df
 @app.callback(
     [Output("type_dropdown", "value"),
      Output("df_sample", "selected_columns"),
-     Output("df_sample", "columns"),
-     Output("selection_done", "children")],
-    [Input("intermediate-value2", "children"), Input("selection", "children")]
+     Output("df_sample", "columns")],
+    [Input("storage_updated_columns", "data"), Input("storage_selected_columns", "data")]
 )
-def update_sample_df(jsonified_cleaned_data2, selection):
-    if jsonified_cleaned_data2 is not None:
-        col = json.loads(jsonified_cleaned_data2)
-        return None, [], col, True
-    if selection is None:
-        return None, [], glob_col, False
+def update_sample_df(jsonified_updated_columns, selected_columns):
+    # if no columns have been selected yet
+    if selected_columns is None:
+        return None, [], glob_sample_df
+
+    # if columns have been selected but their type has not yet been assessed
+    elif jsonified_updated_columns is None:
+        return None, selected_columns, glob_sample_df
+
+    # if columns have been selected and assessed
     else:
-        return None, selection, glob_col, False
+        col = json.loads(jsonified_updated_columns)
+        return None, [], col
 
 
+# stores anonymisation information
 @app.callback(
     [Output("storage_synth_col", "data"),
      Output("storage_types", "data")],
@@ -156,57 +173,53 @@ def store_anonymisation_information(n_clicks, content):
     return None, None
 
 
+# stores selected columns
 @app.callback(
-    Output("synth_dropdown", "options"),
-    [Input("storage_sample_df", "data")]
-)
-def update_synthesization_dropdown(jsonified_cleaned_data):
-    df_sample = pd.read_json(jsonified_cleaned_data, orient="split")
-    for i in df_sample:
-        glob_col.append({"name": i, "id": i, "selectable": True})
-    return [{"label": i, "value": i} for i in df_sample]
-
-@app.callback(
-    Output("selection", "children"),
+    Output("storage_selected_columns", "data"),
     [Input("df_sample", "selected_columns")]
 )
-def columns_selected(children):
+def store_selected_columns(children):
     return children
 
+
+# updates guideline for selected columns based on selected columns
+# enables type and anonymisation dropdowns
 @app.callback(
-    [Output("guideline2", "children"),
+    [Output("guideline_selected_columns", "children"),
      Output("type_dropdown", "disabled"),
-     Output("anony_dropdown", "disabled"),
-     Output("div2", "style")],
+     Output("anony_dropdown", "disabled")],
     [Input("df_sample", "selected_columns")]
 )
-def print_new_guideline(selected_columns):
+def update_guideline(selected_columns):
+
+    # if no columns are selected nothing is displayed and dropdowns remain disabled
     if selected_columns is None or len(selected_columns) == 0:
-        new_guideline2 = "Selected column:"
-        return new_guideline2, True, True, {},
+        new_guideline = "Selected columns:"
+        return new_guideline, True, True
+
+    # else we print which columns have been selected and enable the dropdowns
     else:
-        new_guideline2 = "Selected columns: " + ", ".join(selected_columns)
-    return new_guideline2, False, False, {}
+        new_guideline = "Selected columns: " + ", ".join(selected_columns)
+    return new_guideline, False, False
 
 
+# stores updated global sample df with added types from actual selected columns type values (according to type dropdown)
 @app.callback(
-    Output("intermediate-value2", "children"),
+    Output("storage_updated_columns", "data"),
     [Input("type_dropdown", "value"),
      Input("df_sample", "selected_columns")]
 )
 def store_attribute_types(value, selected_columns):
     if selected_columns is not None and len(selected_columns) > 0 and value is not None:
-        col = []
-        for i, column in enumerate(glob_col):
-            if column["name"] not in selected_columns:
-                col.append(column)
-            else:
-                col.append({"name": column["name"], "id": column["name"], "type": value, "selectable": True})
+        for i, column in enumerate(glob_sample_df):
 
+            # we add a type for selected columns
+            # other columns are left as they are
+            if column["name"] in selected_columns:
                 df_sample_types[column["name"]] = matching_types[value]
-                glob_col[i] = {"name": column["name"], "id": column["name"], "type": value, "selectable": True}
+                glob_sample_df[i] = {"name": column["name"], "id": column["name"], "type": value, "selectable": True}
 
-        return json.dumps(glob_col)
+        return json.dumps(glob_sample_df)
 
     return None
 

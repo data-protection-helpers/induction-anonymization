@@ -17,29 +17,53 @@ df_sample_types = {}
 
 div_initial_df = html.Div(
     [
-        html.H3("Select columns you want to keep", id="guideline", style={"textAlign": "center"}),
-        dash_table.DataTable(
-            id="initial_table",
-            columns=[
-                {"name": i, "id": i, "selectable": True} for i in df.columns],
-            data=df.to_dict("records"),
-            column_selectable="multi",
-            selected_columns=[],
-            virtualization=True,
-            style_table={"height": "350px", "marginLeft": 50, "width": "90%", "overflowY": "auto", "overflowX": "auto"},
-            style_cell_conditional=[
-                {"if": {"column_id": c}, "textAlign": "left"} for c in ["Date", "Region"]],
-            style_data_conditional=[
-                {"if": {"row_index": "odd"}, "backgroundColor": "rgb(248, 248, 248)"}
+        html.Div(
+            [
+                html.H3("Select columns you want to keep", id="guideline", style={"textAlign": "center"}),
             ],
-            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
+            style={"display": "flex", "flex-direction": "column", "align-items": "center"}
         ),
-        dbc.Button(id="validate_columns", n_clicks=0, children="Submit", color="secondary", href="/classification"),
 
+        html.Div(
+            [
+                dcc.Checklist(
+                    id="select_all_init",
+                    options=[{'label': 'Select_all', 'value': 'select_all'}],
+                    value=[],
+                    style={"fontWeight": "bold"}
+                ),
+            ],
+            style={"display": "flex", "flex-direction": "column", "align-items": "left"}
+        ),
+
+        html.Div(
+            [
+                dash_table.DataTable(
+                    id="initial_table",
+                    columns=[{"name": i, "id": i, "selectable": True} for i in df.columns],
+                    data=df.to_dict("records"),
+                    column_selectable="multi",
+                    selected_columns=[],
+                    virtualization=True,
+                    style_table={"height": "350px", "marginLeft": 50, "width": "90%", "overflowY": "auto",
+                                 "overflowX": "auto"},
+                    style_cell_conditional=[
+                        {"if": {"column_id": c}, "textAlign": "left"} for c in ["Date", "Region"]],
+                    style_data_conditional=[
+                        {"if": {"row_index": "odd"}, "backgroundColor": "rgb(248, 248, 248)"}
+                    ],
+                    style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
+                ),
+                dbc.Button(id="validate_columns", n_clicks=0, children="Submit", color="secondary",
+                           href="/classification"),
+
+            ],
+            style={"display": "flex", "flex-direction": "column", "align-items": "center"}
+        ),
     ],
     id="div_initial_df",
     style={"marginTop": 10, "marginLeft": 300, "width": "78%", "height": "550px", "padding": "2rem", "display": "flex",
-           "flex-direction": "column", "align-items": "center", "background-color": "#f8f9fa"}
+           "flex-direction": "column", "background-color": "#f8f9fa"}
 )
 
 
@@ -51,6 +75,14 @@ layout = html.Div(
     style={"display": "flex", "flex-direction": "column"},
 )
 
+@app.callback(
+    Output("initial_table", "selected_columns"),
+    [Input("select_all_init", "value")]
+)
+def select_all_columns(value):
+    if value[0] == "select_all":
+        return [i for i in df.columns]
+    return []
 
 @app.callback(
     Output("storage_sample_df", "data"),

@@ -14,8 +14,8 @@ df = df[:100]
 
 matching_types = {"numeric": "Numerical", "text": "Categorical", "datetime": "Other"}
 df_sample_types = {}
-global glob_sample_df
-glob_sample_df = []
+#global glob_sample_df
+#glob_sample_df = []
 
 
 div_sample_df = html.Div(
@@ -125,18 +125,24 @@ layout = html.Div(
 
 # sets synthesization dropdown options and global sample dataframe based on selected columns from homepage
 @app.callback(
-    Output("synth_dropdown", "options"),
-    [Input("storage_sample_df", "data")]
+    [Output("synth_dropdown", "options"),
+     Output("storage_glob_sample_df", "data")],
+    [Input("storage_sample_df", "data"), Input("storage_updated_columns", "data")]
 )
-def classification_page_initialization(jsonified_df_sample):
+def classification_page_initialization(jsonified_df_sample, data):
     df_sample = pd.read_json(jsonified_df_sample, orient="split")
+    if data is None :
+        glob_sample_df = []
+        # builds global sample dataframe
+        for i in df_sample:
+            glob_sample_df.append({"name": i, "id": i, "selectable": True})
 
-    # builds global sample dataframe
-    for i in df_sample:
-        glob_sample_df.append({"name": i, "id": i, "selectable": True})
+        # returns options for synthesization dropdown and stores global sample dataframe
+        return [{"label": i, "value": i} for i in df_sample], glob_sample_df
 
-    # returns options for synthesization dropdown
-    return [{"label": i, "value": i} for i in df_sample]
+    else:
+        data_new = json.loads(data)
+        return [{"label": i, "value": i} for i in df_sample], data_new
 
 
 # updates the sample df
@@ -144,9 +150,9 @@ def classification_page_initialization(jsonified_df_sample):
     [Output("type_dropdown", "value"),
      Output("df_sample", "selected_columns"),
      Output("df_sample", "columns")],
-    [Input("storage_updated_columns", "data"), Input("storage_selected_columns", "data")]
+    [Input("storage_updated_columns", "data"), Input("storage_selected_columns", "data"), Input("storage_glob_sample_df", "data")]
 )
-def update_sample_df(jsonified_updated_columns, selected_columns):
+def update_sample_df(jsonified_updated_columns, selected_columns, glob_sample_df):
     # if no columns have been selected yet
     if selected_columns is None:
         return None, [], glob_sample_df
@@ -207,9 +213,9 @@ def update_guideline(selected_columns):
 @app.callback(
     Output("storage_updated_columns", "data"),
     [Input("type_dropdown", "value"),
-     Input("df_sample", "selected_columns")]
+     Input("df_sample", "selected_columns"), Input("storage_glob_sample_df", "data")]
 )
-def store_attribute_types(value, selected_columns):
+def store_attribute_types(value, selected_columns, glob_sample_df):
     if selected_columns is not None and len(selected_columns) > 0 and value is not None:
         for i, column in enumerate(glob_sample_df):
 
@@ -218,9 +224,7 @@ def store_attribute_types(value, selected_columns):
             if column["name"] in selected_columns:
                 df_sample_types[column["name"]] = matching_types[value]
                 glob_sample_df[i] = {"name": column["name"], "id": column["name"], "type": value, "selectable": True}
-
         return json.dumps(glob_sample_df)
-
-    return None
+    return []
 
 

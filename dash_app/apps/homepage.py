@@ -80,7 +80,8 @@ layout = html.Div(
     [Input("select_all_init", "value")]
 )
 def select_all_columns(value):
-    if value[0] == "select_all":
+
+    if len(value) >=1 and value[0] == "select_all":
         return [i for i in df.columns]
     return []
 

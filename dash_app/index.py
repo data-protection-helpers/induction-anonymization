@@ -3,13 +3,10 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 
-from apps import homepage, synthetic_data, results, classification, visualization
+from apps import homepage, synthetic_data , results, classification, visualization
 from app import app
 from components import sidebar
-import dash
-
-
-
+import dash_table
 
 
 
@@ -44,7 +41,6 @@ app.layout = html.Div(
             id="hidden_data",
             style={"display": "none"},
         ),
-        dbc.Button(id="smote_button", n_clicks=0, children="Synthesize", color="secondary", href="/results", style={"display": "none"})
 
 
     ],  style={"display": "flex", "align-items": "flex-start"}

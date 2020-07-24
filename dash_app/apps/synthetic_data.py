@@ -66,13 +66,13 @@ layout = html.Div(
      Output("storage_generated_table_cat", "data"),
      Output("storage_generated_table_num", "data"),
      Output("storage_sample_df_num", "data")],
-    [Input("smote_button", "n_clicks"),
+    [
      Input("storage_synth_col", "data"),
      Input("storage_types", "data"),
      Input("storage_sample_df", "data")]
 )
-def store_generated_df_information(n_clicks, data, types, jsonified_df_sample):
-    if n_clicks != 0:
+def store_generated_df_information(data, types, jsonified_df_sample):
+    if jsonified_df_sample is not None and data is not None:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
         categorical_columns = []
         for col in data:

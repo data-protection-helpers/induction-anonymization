@@ -138,10 +138,11 @@ def store_initial_pearson_plot(data):
     [Input("storage_sample_df", "data")]
 )
 def update_initial_table(jsonified_data):
-    df_gen = pd.read_json(jsonified_data, orient="split")
-    col_gen = [{"name": i, "id": i, "selectable": True} for i in df_gen.columns],
-    return col_gen[0], col_gen[0]
-
+    if jsonified_data is not None:
+        df_gen = pd.read_json(jsonified_data, orient="split")
+        col_gen = [{"name": i, "id": i, "selectable": True} for i in df_gen.columns],
+        return col_gen[0], col_gen[0]
+    return None, None
 
 @app.callback(
     [Output("plot_graph_init", "figure"),
@@ -152,25 +153,26 @@ def update_initial_table(jsonified_data):
      Input("storage_types", "data"),]
 )
 def renders_plot(selected_columns, jsonified_data1, jsonified_data2, types):
-    df_gen_num = pd.read_json(jsonified_data1, orient="split")
+    if jsonified_data1 is not None and jsonified_data2 is not None and selected_columns !=[]:
+        df_gen_num = pd.read_json(jsonified_data1, orient="split")
+        df_sample_num = pd.read_json(jsonified_data2, orient="split")
 
-    df_sample_num = pd.read_json(jsonified_data2, orient="split")
+        if len(selected_columns) == 2:
+            if types[selected_columns[0]] == "Categorical":
+                attribute1 = selected_columns[0] + "_NUM"
+            else:
+                attribute1 = selected_columns[0]
 
-    if len(selected_columns) == 2:
-        if types[selected_columns[0]] == "Categorical":
-            attribute1 = selected_columns[0] + "_NUM"
-        else:
-            attribute1 = selected_columns[0]
+            if types[selected_columns[1]] == "Categorical":
+                attribute2 = selected_columns[1] + "_NUM"
+            else:
+                attribute2 = selected_columns[1]
 
-        if types[selected_columns[1]] == "Categorical":
-            attribute2 = selected_columns[1] + "_NUM"
-        else:
-            attribute2 = selected_columns[1]
+            fig_init = px.scatter(df_sample_num, x=attribute1, y=attribute2, title="Initial dataframe")
+            fig_gen = px.scatter(df_gen_num, x=attribute1, y=attribute2, title="Generated dataframe")
 
-        fig_init = px.scatter(df_sample_num, x=attribute1, y=attribute2, title="Initial dataframe")
-        fig_gen = px.scatter(df_gen_num, x=attribute1, y=attribute2, title="Generated dataframe")
-
-        return fig_init, fig_gen
+            return fig_init, fig_gen
+    return {'data': [], 'layout': {}}, {'data': [], 'layout': {}}
 
 
 @app.callback(
@@ -181,24 +183,25 @@ def renders_plot(selected_columns, jsonified_data1, jsonified_data2, types):
      Input("storage_types", "data"),]
 )
 def renders_plot(selected_columns, jsonified_data1, jsonified_data2, types):
-    df_gen_num = pd.read_json(jsonified_data1, orient="split")
-    df_sample_num = pd.read_json(jsonified_data2, orient="split")
+    if jsonified_data1 is not None and jsonified_data2 is not None and selected_columns !=[]:
+        df_gen_num = pd.read_json(jsonified_data1, orient="split")
+        df_sample_num = pd.read_json(jsonified_data2, orient="split")
 
-    if types[selected_columns[0]] == "Categorical":
-        attribute = selected_columns[0] + "_NUM"
-    else:
-        attribute = selected_columns[0]
+        if types[selected_columns[0]] == "Categorical":
+            attribute = selected_columns[0] + "_NUM"
+        else:
+            attribute = selected_columns[0]
 
-    fig = go.Figure()
-    fig.add_trace(go.Histogram(x=df_gen_num[attribute], name="Generated dataframe") )
-    fig.add_trace(go.Histogram(x=df_sample_num[attribute], name="Initial dataframe"))
+        fig = go.Figure()
+        fig.add_trace(go.Histogram(x=df_gen_num[attribute], name="Generated dataframe") )
+        fig.add_trace(go.Histogram(x=df_sample_num[attribute], name="Initial dataframe"))
 
-    fig.update_layout(barmode='overlay')
+        fig.update_layout(barmode='overlay')
 
-    fig.update_traces(opacity=0.75)
+        fig.update_traces(opacity=0.75)
 
-    return fig
+        return fig
 
-
+    return {'data': [], 'layout': {}}
 
 

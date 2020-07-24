@@ -57,9 +57,12 @@ div_initial_df = html.Div(
                 dbc.Button(id="validate_columns", n_clicks=0, children="Submit", color="secondary",
                            href="/classification"),
 
+
             ],
             style={"display": "flex", "flex-direction": "column", "align-items": "center"}
         ),
+
+
     ],
     id="div_initial_df",
     style={"marginTop": 10, "marginLeft": 300, "width": "78%", "height": "550px", "padding": "2rem", "display": "flex",
@@ -80,23 +83,18 @@ layout = html.Div(
     [Input("select_all_init", "value")]
 )
 def select_all_columns(value):
-
     if len(value) >=1 and value[0] == "select_all":
         return [i for i in df.columns]
     return []
 
 @app.callback(
     Output("storage_sample_df", "data"),
-    [Input("initial_table", "selected_columns"),
-     Input("validate_columns", "n_clicks")]
+    [Input("validate_columns", "n_clicks")],
+    [State("initial_table", "selected_columns")]
 )
-def store_reduced_data_information(selected_columns, n_clicks):
-    changed_id = [p["prop_id"] for p in dash.callback_context.triggered][0]
-    if "validate_columns" in changed_id:
-        df_sample = df[selected_columns]
-        return df_sample.to_json(date_format="iso", orient="split")
-    return None
-
+def store_reduced_data_information( n_clicks, selected_columns,):
+    df_sample = df[selected_columns]
+    return df_sample.to_json(date_format="iso", orient="split")
 
 
 if __name__ == "__main__":

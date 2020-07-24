@@ -89,9 +89,6 @@ div_generated = html.Div(
 
 )
 
-
-
-
 layout = html.Div(
     [
         div_initial,
@@ -110,9 +107,11 @@ layout = html.Div(
     [Input("storage_generated_table_cat", "data")]
 )
 def update_initial_table(jsonified_data):
-    df_gen = pd.read_json(jsonified_data, orient="split")
-    col_gen = [{"name": i, "id": i, "selectable": True} for i in df_gen.columns],
-    return col_gen[0], df_gen.to_dict("records")
+    if jsonified_data is not None:
+        df_gen = pd.read_json(jsonified_data, orient="split")
+        col_gen = [{"name": i, "id": i, "selectable": True} for i in df_gen.columns],
+        return col_gen[0], df_gen.to_dict("records")
+    return None, None
 
 @app.callback(
     Output("initial_table_res", "columns"),

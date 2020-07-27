@@ -14,6 +14,7 @@ df = df[:100]
 
 matching_types = {"numeric": "Numerical", "text": "Categorical", "datetime": "Other"}
 df_sample_types = {}
+df_sample_techniques = {}
 #global glob_sample_df
 #glob_sample_df = []
 
@@ -130,6 +131,18 @@ layout = html.Div(
     style={"display": "flex", "flex-direction": "column"}
 )
 
+
+@app.callback(
+    Output("validate_anony", "disabled"),
+    [Input("type_dropdown", "value"),
+     Input("anony_dropdown", "value")]
+)
+def disable_validate_button(value_type, value_technique):
+    if value_type != "Select the type of the attribute" and value_technique !="Select the type of anonymisation you want to perform":
+        return False
+    return True
+
+
 # sets synthesization dropdown options and global sample dataframe based on selected columns from homepage
 @app.callback(
     [Output("df_sample", "columns"),
@@ -144,7 +157,7 @@ layout = html.Div(
      State("anony_dropdown", "value")]
 
 )
-def classification_page_initialization(jsonified_df_sample,  n_clicks, selected_columns, columns, value_type, value_anony):
+def classification_page_initialization(jsonified_df_sample,  n_clicks, selected_columns, columns, value_type, value_technique):
     if jsonified_df_sample is not None:
         if columns is None:
             df_sample = pd.read_json(jsonified_df_sample, orient="split")
@@ -158,6 +171,7 @@ def classification_page_initialization(jsonified_df_sample,  n_clicks, selected_
                     # other columns are left as they are
                     if name in selected_columns:
                         df_sample_types[name] = matching_types[value_type]
+                        df_sample_techniques[name] = value_technique
                         col[i] = {"name": name, "id": name, "type": value_type,
                                   "selectable": True}
                 return col, [], "Select the type of the attribute", "Select the type of anonymisation you want to perform"

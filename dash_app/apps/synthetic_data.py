@@ -6,6 +6,7 @@ import dash_table
 import pandas as pd
 from app import app
 from smote import treatment, numerical_data
+from swapping import swap
 import plotly.graph_objects as go
 import dash
 
@@ -65,28 +66,40 @@ layout = html.Div(
      Output("storage_pearson_graph_init", "data"),
      Output("storage_generated_table_cat", "data"),
      Output("storage_generated_table_num", "data"),
-     Output("storage_sample_df_num", "data")],
-    [
-     Input("storage_synth_col", "data"),
-     Input("storage_types", "data"),
-     Input("storage_sample_df", "data")]
+     Output("storage_sample_df_num", "data"),
+     Output("storage_whole_generated_table", "data")],
+    [Input("smote_button", "n_clicks")],
+    [State("storage_swap_attributes", "data"),
+     State("storage_synth_attributes", "data"),
+     State("storage_types", "data"),
+     State("storage_sample_df", "data")]
 )
-def store_generated_df_information(data, types, jsonified_df_sample):
-    if jsonified_df_sample is not None and data is not None and types is not None:
+def store_generated_df_information(n_clicks, swap_attributes, synth_attributes, types, jsonified_df_sample):
+
+    if jsonified_df_sample is not None and synth_attributes is not None and types is not None:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
         categorical_columns = []
-        for col in data:
+
+        for col in synth_attributes:
 
             if types[col] == "Categorical":
                 categorical_columns.append(col)
 
-        df_gen_num, df_sample_num, transitional_dfs = numerical_data(df_sample[data],  categorical_columns)
+
+        df_gen_num, df_sample_num, transitional_dfs = numerical_data(df_sample[synth_attributes],  categorical_columns)
         fig_gen, fig_init, df_gen_cat = treatment(df_gen_num, df_sample_num, transitional_dfs, categorical_columns)
 
-        return fig_gen, fig_init, df_gen_cat.to_json(date_format="iso", orient="split"), \
-               df_gen_num.to_json(date_format="iso", orient="split"), df_sample_num.to_json(date_format="iso", orient="split")
+        whole_table = df_gen_cat.copy()
+        for attribute in swap_attributes:
+            whole_table[attribute] = df_sample[attribute]
 
-    return None, None, None, None, None
+        whole_table_swapped = swap(whole_table, swap_attributes)
+        whole_table_swapped = swap(whole_table, swap_attributes)
+
+        return fig_gen, fig_init, df_gen_cat.to_json(date_format="iso", orient="split"), \
+               df_gen_num.to_json(date_format="iso", orient="split"), df_sample_num.to_json(date_format="iso", orient="split"), whole_table_swapped.to_json(date_format="iso", orient="split")
+
+    return None, None, None, None, None, None
 
 
 

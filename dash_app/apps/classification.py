@@ -272,15 +272,20 @@ def disable_main_button(df_sample_types, df_sample_techniques, columns):
 
 # stores anonymisation information
 @app.callback(
-    Output("storage_synth_col", "data"),
+    [Output("storage_synth_attributes", "data"),
+     Output("storage_swap_attributes", "data")],
     [Input("validate_anonymisation", "n_clicks")],
-     [State("storage_techniques", "data")],
+    [State("storage_techniques", "data")],
 
 )
 def store_anonymisation_information(n_clicks, df_sample_techniques):
     if df_sample_techniques is not None:
-        synthesization_columns = []
+        synthesization_attributes = []
+        swapping_attributes = []
         for key in df_sample_techniques:
             if df_sample_techniques[key] == "synth":
-                synthesization_columns.append(key)
-        return synthesization_columns
+                synthesization_attributes.append(key)
+            elif df_sample_techniques[key] == "swap":
+                swapping_attributes.append(key)
+        return synthesization_attributes, swapping_attributes
+    return None, None

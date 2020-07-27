@@ -135,13 +135,15 @@ def store_initial_pearson_plot(data):
 @app.callback(
     [Output("df_columns_scatter", "columns"),
      Output("df_columns_distribution", "columns")],
-    [Input("storage_sample_df", "data")]
+    [Input("storage_sample_df", "data"),
+     Input("storage_synth_attributes", "data")
+    ]
 )
-def update_initial_table(jsonified_data):
+def update_initial_table(jsonified_data, synth_attributes):
     if jsonified_data is not None:
-        df_gen = pd.read_json(jsonified_data, orient="split")
-        col_gen = [{"name": i, "id": i, "selectable": True} for i in df_gen.columns],
-        return col_gen[0], col_gen[0]
+        df_synth = pd.read_json(jsonified_data, orient="split")
+        col_synth = [{"name": i, "id": i, "selectable": True} for i in df_synth.columns if i in synth_attributes],
+        return col_synth[0], col_synth[0]
     return None, None
 
 @app.callback(

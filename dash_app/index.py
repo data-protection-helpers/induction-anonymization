@@ -25,7 +25,8 @@ app.layout = html.Div(
                 # from classification
                 dcc.Store(id="storage_updated_columns", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_selected_columns", storage_type="local", clear_data=True),
-                dcc.Store(id="storage_synth_col", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_synth_attributes", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_swap_attributes", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_types", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_techniques", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_glob_sample_df", storage_type="local", clear_data=True),
@@ -36,6 +37,8 @@ app.layout = html.Div(
                 dcc.Store(id="storage_generated_table_cat", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_generated_table_num", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_sample_df_num", storage_type="local", clear_data=True),
+
+                dcc.Store(id="storage_whole_generated_table", storage_type="local", clear_data=True),
 
 
             ],

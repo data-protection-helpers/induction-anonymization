@@ -28,7 +28,7 @@ div_initial_df = html.Div(
             [
                 dcc.Checklist(
                     id="select_all_init",
-                    options=[{'label': 'Select_all', 'value': 'select_all'}],
+                    options=[{'label': 'Select all', 'value': 'select_all'}],
                     value=[],
                     style={"fontWeight": "bold"}
                 ),

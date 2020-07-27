@@ -9,8 +9,6 @@ from components import sidebar
 import dash_table
 
 
-
-
 app.layout = html.Div(
     [
         sidebar.sidebar_div,

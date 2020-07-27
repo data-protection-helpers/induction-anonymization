@@ -87,35 +87,21 @@ div_classification = html.Div(
                         {"label": "Masking", "value": "mask"},
                         {"label": "Swapping", "value": "swap"},
                         {"label": "Aggregation", "value": "aggreg"},
+                        {"label": "Synthesization", "value": "synth"},
                     ],
                     placeholder="Select the type of anonymisation you want to perform",
                 ),
                 dbc.Button(id="validate_anony", n_clicks=0, children="Validate", color="secondary"),
 
-                html.Div(
-                    [
-                        html.H3("Select columns you want to synthesize", style={"text-align": "left"}),
-                        dcc.Dropdown(
-                            id="synth_dropdown",
-                            multi=True,
-                            options=[],
-                            placeholder="Select the type of anonymisation you want to perform",
-                        ),
-                    ],
-                    style={"marginTop": 50, "marginBottom": 50}
-                ),
+
                 html.Div(
                     [
                         dbc.Button(id="validate_anonymisation", n_clicks=0, children="Submit", color="secondary",
                                    href="/synthetic_data"),
                     ], style={"display": "flex", "flex-direction": "column", "align-items": "center"}
                 ),
-
-
             ],
             id="div2",
-
-
         ),
     ],
     style={"marginTop": 10, "marginLeft": 300, "width": "78%", "height": "550px", "padding": "2rem", "display": "flex",
@@ -178,16 +164,6 @@ def classification_page_initialization(jsonified_df_sample,  n_clicks, selected_
     return None, [], "Select the type of the attribute", "Select the type of anonymisation you want to perform"
 
 
-@app.callback(
-    Output("synth_dropdown", "options"),
-    [Input("storage_sample_df", "data")]
-)
-def set_synth_dropdown(jsonified_df_sample):
-    if jsonified_df_sample is not None:
-        df_sample = pd.read_json(jsonified_df_sample, orient="split")
-        return [{"label": i, "value": i} for i in df_sample]
-    return []
-
 
 # updates guideline for selected columns based on selected columns
 # enables type and anonymisation dropdowns
@@ -213,7 +189,11 @@ def update_guideline(selected_columns):
 @app.callback(
     [Output("storage_synth_col", "data"),
      Output("storage_types", "data")],
-    [Input("synth_dropdown", "value")],
+    [Input("validate_anonymisation", "n_clicks")],
 )
-def store_anonymisation_information(content):
-    return content, df_sample_types
+def store_anonymisation_information(data):
+    synthesization_columns = []
+    for key in df_sample_techniques:
+        if df_sample_techniques[key] == "synth":
+            synthesization_columns.append(key)
+    return synthesization_columns, df_sample_types

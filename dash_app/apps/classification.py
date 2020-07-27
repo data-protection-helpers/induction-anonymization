@@ -13,8 +13,8 @@ df = pd.read_csv("../data/statistical-generative-modeling-sample.csv.bz2")
 df = df[:100]
 
 matching_types = {"numeric": "Numerical", "text": "Categorical", "datetime": "Other"}
-df_sample_types = {}
-df_sample_techniques = {}
+#df_sample_types = {}
+#df_sample_techniques = {}
 #global glob_sample_df
 #glob_sample_df = []
 
@@ -141,16 +141,6 @@ layout = html.Div(
 )
 
 
-"""@app.callback(
-    Output("df_sample", "selected_columns"),
-    [Input("select_all_sample", "value")]
-)
-def select_all_columns(value):
-    if len(value) >=1 and value[0] == "select_all":
-        return [i for i in df.columns]
-    return []
-"""
-
 @app.callback(
     Output("validate_anony", "disabled"),
     [Input("type_dropdown", "value"),
@@ -167,14 +157,18 @@ def disable_validate_button(value_type, value_technique):
     [Output("df_sample", "columns"),
      Output("df_sample", "selected_columns"),
      Output("type_dropdown", "value"),
-     Output("anony_dropdown", "value")],
+     Output("anony_dropdown", "value"),
+
+     ],
     [Input("storage_sample_df", "data"),
      Input("validate_anony", "n_clicks"),
      Input("select_all_sample", "value")],
     [State("df_sample", "selected_columns"),
      State("df_sample", "columns"),
      State("type_dropdown", "value"),
-     State("anony_dropdown", "value")]
+     State("anony_dropdown", "value"),
+
+     ]
 
 )
 def classification_page_initialization(jsonified_df_sample,  n_clicks, select_all, selected_columns, columns, value_type, value_technique):
@@ -191,8 +185,7 @@ def classification_page_initialization(jsonified_df_sample,  n_clicks, select_al
                     # we add a type for selected columns
                     # other columns are left as they are
                     if name in selected_columns:
-                        df_sample_types[name] = matching_types[value_type]
-                        df_sample_techniques[name] = value_technique
+
                         col[i] = {"name": name, "id": name, "type": value_type,
                                   "selectable": True}
                 return col, [], "Select the type of the attribute", "Select the type of anonymisation you want to perform"
@@ -200,6 +193,33 @@ def classification_page_initialization(jsonified_df_sample,  n_clicks, select_al
 
                 return columns, [i for i in df_sample.columns], "Select the type of the attribute", "Select the type of anonymisation you want to perform"
 
+
+
+@app.callback(
+    [ Output("storage_types", "data"),
+     Output("storage_techniques", "data")],
+    [Input("validate_anony", "n_clicks"),
+     ],
+    [State("df_sample", "selected_columns"),
+     State("storage_types", "data"),
+     State("storage_techniques", "data"),
+     State("type_dropdown", "value"),
+     State("anony_dropdown", "value"),
+     State("df_sample", "columns")]
+)
+def updates_info(n_clicks, selected_columns, df_sample_types, df_sample_techniques, value_type, value_technique, columns):
+    if columns is None:
+
+        return {}, {}
+    else:
+
+        for column in columns:
+            # we add a type for selected columns
+            # other columns are left as they are
+            if column["name"] in selected_columns:
+                df_sample_types[column["name"]] = matching_types[value_type]
+                df_sample_techniques[column["name"]] = value_technique
+        return df_sample_types, df_sample_techniques
 
 @app.callback(
     Output("select_all_sample", "value"),
@@ -231,14 +251,15 @@ def update_guideline(selected_columns):
 
 # stores anonymisation information
 @app.callback(
-    [Output("storage_synth_col", "data"),
-     Output("storage_types", "data"),
-     Output("storage_techniques", "data")],
+    Output("storage_synth_col", "data"),
     [Input("validate_anonymisation", "n_clicks")],
+     [State("storage_techniques", "data")],
+
 )
-def store_anonymisation_information(data):
-    synthesization_columns = []
-    for key in df_sample_techniques:
-        if df_sample_techniques[key] == "synth":
-            synthesization_columns.append(key)
-    return synthesization_columns, df_sample_types, df_sample_techniques
+def store_anonymisation_information(data, df_sample_techniques):
+    if df_sample_techniques is not None:
+        synthesization_columns = []
+        for key in df_sample_techniques:
+            if df_sample_techniques[key] == "synth":
+                synthesization_columns.append(key)
+        return synthesization_columns

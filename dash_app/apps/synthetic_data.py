@@ -72,6 +72,7 @@ layout = html.Div(
      Input("storage_sample_df", "data")]
 )
 def store_generated_df_information(data, types, jsonified_df_sample):
+    print("data", data)
     if jsonified_df_sample is not None and data is not None and types is not None:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
         categorical_columns = []

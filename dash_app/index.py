@@ -27,6 +27,7 @@ app.layout = html.Div(
                 dcc.Store(id="storage_selected_columns", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_synth_attributes", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_swap_attributes", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_mask_attributes", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_types", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_techniques", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_glob_sample_df", storage_type="local", clear_data=True),

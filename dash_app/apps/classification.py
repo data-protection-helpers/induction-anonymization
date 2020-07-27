@@ -107,9 +107,9 @@ div_classification = html.Div(
                 dcc.Dropdown(
                     id="anony_dropdown",
                     options=[
-                        {"label": "Masking", "value": "mask"},
+                        {"label": "Total masking", "value": "mask"},
                         {"label": "Swapping", "value": "swap"},
-                        {"label": "Aggregation", "value": "aggreg"},
+                      #  {"label": "Aggregation", "value": "aggreg"},
                         {"label": "Synthesization", "value": "synth"},
                     ],
                     placeholder="Select the type of anonymisation you want to perform",
@@ -273,7 +273,8 @@ def disable_main_button(df_sample_types, df_sample_techniques, columns):
 # stores anonymisation information
 @app.callback(
     [Output("storage_synth_attributes", "data"),
-     Output("storage_swap_attributes", "data")],
+     Output("storage_swap_attributes", "data"),
+     Output("storage_mask_attributes", "data")],
     [Input("validate_anonymisation", "n_clicks")],
     [State("storage_techniques", "data")],
 
@@ -282,10 +283,13 @@ def store_anonymisation_information(n_clicks, df_sample_techniques):
     if df_sample_techniques is not None:
         synthesization_attributes = []
         swapping_attributes = []
+        masking_attributes = []
         for key in df_sample_techniques:
             if df_sample_techniques[key] == "synth":
                 synthesization_attributes.append(key)
             elif df_sample_techniques[key] == "swap":
                 swapping_attributes.append(key)
-        return synthesization_attributes, swapping_attributes
-    return None, None
+            elif df_sample_techniques[key] == "mask":
+                masking_attributes.append(key)
+        return synthesization_attributes, swapping_attributes, masking_attributes
+    return None, None, None

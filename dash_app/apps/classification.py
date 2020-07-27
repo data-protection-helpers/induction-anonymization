@@ -89,6 +89,7 @@ div_classification = html.Div(
                     ],
                     placeholder="Select the type of anonymisation you want to perform",
                 ),
+                dbc.Button(id="validate_anony", n_clicks=0, children="Validate", color="secondary"),
 
                 html.Div(
                     [
@@ -132,31 +133,35 @@ layout = html.Div(
 # sets synthesization dropdown options and global sample dataframe based on selected columns from homepage
 @app.callback(
     [Output("df_sample", "columns"),
-     Output("df_sample", "selected_columns")],
+     Output("df_sample", "selected_columns"),
+     Output("type_dropdown", "value"),
+     Output("anony_dropdown", "value")],
     [Input("storage_sample_df", "data"),
-     Input("type_dropdown", "value")],
+     Input("validate_anony", "n_clicks")],
     [State("df_sample", "selected_columns"),
-     State("df_sample", "columns")]
+     State("df_sample", "columns"),
+     State("type_dropdown", "value"),
+     State("anony_dropdown", "value")]
 
 )
-def classification_page_initialization(jsonified_df_sample, value, selected_columns, columns):
+def classification_page_initialization(jsonified_df_sample,  n_clicks, selected_columns, columns, value_type, value_anony):
     if jsonified_df_sample is not None:
         if columns is None:
             df_sample = pd.read_json(jsonified_df_sample, orient="split")
-            return [{"name": i, "id": i, "selectable": True} for i in df_sample.columns], []
+            return [{"name": i, "id": i, "selectable": True} for i in df_sample.columns], [], "Select the type of the attribute", "Select the type of anonymisation you want to perform"
         else:
-            if value is not None:
+            if value_type is not None:
                 df_sample = pd.read_json(jsonified_df_sample, orient="split")
                 col = columns
                 for i, name in enumerate(df_sample.columns):
                     # we add a type for selected columns
                     # other columns are left as they are
                     if name in selected_columns:
-                        df_sample_types[name] = matching_types[value]
-                        col[i] = {"name": name, "id": name, "type": value,
+                        df_sample_types[name] = matching_types[value_type]
+                        col[i] = {"name": name, "id": name, "type": value_type,
                                   "selectable": True}
-                return col, []
-    return None, []
+                return col, [], "Select the type of the attribute", "Select the type of anonymisation you want to perform"
+    return None, [], "Select the type of the attribute", "Select the type of anonymisation you want to perform"
 
 
 @app.callback(

@@ -196,7 +196,7 @@ def classification_page_initialization(jsonified_df_sample,  n_clicks, select_al
 
 
 @app.callback(
-    [ Output("storage_types", "data"),
+    [Output("storage_types", "data"),
      Output("storage_techniques", "data")],
     [Input("validate_anony", "n_clicks"),
      ],
@@ -249,6 +249,27 @@ def update_guideline(selected_columns):
     return new_guideline, False, False
 
 
+
+
+@app.callback(
+    Output("validate_anonymisation", "disabled"),
+    [Input("storage_types", "data"),
+     Input("storage_techniques", "data"),
+     Input("df_sample", "columns")]
+)
+def disable_main_button(df_sample_types, df_sample_techniques, columns):
+    if columns is None:
+        return True
+    else:
+        disable = False
+        for column in columns:
+
+            if column["name"] not in df_sample_types or column["name"] not in df_sample_techniques:
+
+                disable = True
+        return disable
+
+
 # stores anonymisation information
 @app.callback(
     Output("storage_synth_col", "data"),
@@ -256,7 +277,7 @@ def update_guideline(selected_columns):
      [State("storage_techniques", "data")],
 
 )
-def store_anonymisation_information(data, df_sample_techniques):
+def store_anonymisation_information(n_clicks, df_sample_techniques):
     if df_sample_techniques is not None:
         synthesization_columns = []
         for key in df_sample_techniques:

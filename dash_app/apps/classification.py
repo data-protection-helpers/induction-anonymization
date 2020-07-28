@@ -18,10 +18,9 @@ div_sample_df = html.Div(
     [
         html.Div(
             [
-                html.H3("Categorize each column", style={"textAlign": "center"}),
+                html.H3("Classify each column", style={"textAlign": "center"}),
             ],
-            style={"marginTop": 10, "marginLeft": 300, "width": "78%", "height": "550px", "padding": "2rem", "display":
-                   "flex", "flex-direction": "column", "align-items": "center", "background-color": "#f8f9fa"}
+            style={"display": "flex", "flex-direction": "column", "align-items": "center"}
         ),
         html.Div(
             [
@@ -78,7 +77,7 @@ div_classification = html.Div(
         ),
         html.Div(
             [
-                html.H4("Attribute type", style={"text-align": "left"}),
+                html.H4("Type of attribute:", style={"text-align": "left"}),
                 dcc.Dropdown(
                     id="type_dropdown",
                     options=[
@@ -89,7 +88,7 @@ div_classification = html.Div(
                     placeholder="Select the type of the attribute",
                 ),
 
-                html.H4("Anonymisation technique", style={"text-align": "left"}),
+                html.H4("Anonymisation technique:", style={"text-align": "left"}),
                 dcc.Dropdown(
                     id="anony_dropdown",
                     options=[
@@ -100,19 +99,35 @@ div_classification = html.Div(
                     ],
                     placeholder="Select the type of anonymisation you want to perform",
                 ),
-                dbc.Button(id="validate_partial_classification", n_clicks=0, children="Validate", color="secondary"),
 
-                html.Div(
-                    [
-                        dbc.Button(id="validate_total_classification", n_clicks=0, children="Submit", color="secondary",
-                                   href="/synthetic_data"),
-                    ], style={"display": "flex", "flex-direction": "column", "align-items": "center"}
-                ),
+                #html.Div(
+                #            [
+
             ],
+            #, style={"display": "flex", "width":10, "flex-direction": "column", "align-items": "left"}
+                #),
+
+            #],
+            style={"display": "flex", "flex-direction": "column", "justify-content": "space-around"}
+
+        ),
+
+        html.Div(
+            [
+                dbc.Button(id="validate_partial_classification", n_clicks=0, children="Validate", color="secondary"),
+            ], style={"display": "flex", "flex-direction": "column", "align-items": "start"}
+        ),
+
+
+        html.Div(
+            [
+                dbc.Button(id="validate_total_classification", n_clicks=0, children="Submit", color="secondary",
+                           href="/synthetic_data"),
+            ], style={"display": "flex", "flex-direction": "column", "align-items": "center"}
         ),
     ],
-    style={"marginTop": 10, "marginLeft": 300, "width": "78%", "height": "550px", "padding": "2rem", "display": "flex",
-           "flex-direction": "column", "background-color": "#f8f9fa"}
+    style={"marginTop": 10, "marginLeft": 300, "width": "78%", "height": "350px", "padding": "2rem", "display": "flex",
+           "flex-direction": "column", "justify-content": "space-around", "background-color": "#f8f9fa"}
 
 )
 
@@ -174,7 +189,7 @@ def empties_select_all_button(n_clicks):
      Output("anony_dropdown", "disabled")],
     [Input("df_sample", "selected_columns")]
 )
-def update_guideline(selected_columns):
+def updates_guideline(selected_columns):
     # if no columns are selected nothing is displayed and dropdowns remain disabled
     if selected_columns is None or len(selected_columns) == 0:
         new_guideline = "Selected columns:"
@@ -287,7 +302,7 @@ def updates_classification_page(jsonified_df_sample, n_clicks, select_all, selec
                                                                                                     "of anonymisation" \
                                                                                                     " you want to " \
                                                                                                     "perform "
-
+    return None, None, None, None
 
 
 

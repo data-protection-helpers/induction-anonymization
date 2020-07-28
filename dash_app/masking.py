@@ -5,7 +5,7 @@ def complete_masking(df, attributes):
     for row in df_masked.itertuples():
         for attribute in attributes:
             masked_val = []
-            val = str( getattr(row, attribute))
+            val = str(getattr(row, attribute))
             for i in range(len(val)):
                 masked_val.append("#")
             processed = "".join(masked_val)

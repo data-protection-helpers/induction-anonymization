@@ -43,13 +43,19 @@ div_initial_df = html.Div(
                 html.H3("Select columns you want to keep", id="guideline", style={"textAlign": "center"}),
 
 
-
-                dcc.Checklist(
-                    id="select_all_init",
-                    options=[{'label': 'Select all', 'value': 'select_all'}],
-                    value=[],
-                    style={"fontWeight": "bold"}
+                html.Div(
+                    [
+                        dcc.Checklist(
+                            id="select_all_init",
+                            options=[{'label': 'Select all', 'value': 'select_all'}],
+                            value=[],
+                            style={"fontWeight": "bold", "display": "flex", "flex-direction": "column",
+                                   "align-items": "left"}
+                        ),
+                    ],
+                    style={"display": "flex", "flex-direction": "column", "align-items": "left"}
                 ),
+
 
                 dash_table.DataTable(
                     id="initial_table",
@@ -80,8 +86,6 @@ div_initial_df = html.Div(
     style={"marginTop": 10, "marginLeft": 300, "width": 1570, "height": 900, "padding": "2rem", "display": "flex",
            "flex-direction": "column", "background-color": "#f8f9fa", "justify-content": "space-around"}
 )
-
-
 
 
 layout = html.Div(

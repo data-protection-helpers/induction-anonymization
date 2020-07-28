@@ -117,8 +117,10 @@ def update_initial_table(jsonified_data):
     Output("initial_table_res", "columns"),
     [Input("storage_sample_df", "data")]
 )
-def update_reduced_table(jsonified_cleaned_data1):
-    df_sample = pd.read_json(jsonified_cleaned_data1, orient="split")
-    col = [{"name": i, "id": i, "selectable": True} for i in df_sample],
-    return col[0]
+def update_reduced_table(jsonified_sample_df):
+    if jsonified_sample_df is not None:
+        df_sample = pd.read_json(jsonified_sample_df, orient="split")
+        col = [{"name": i, "id": i, "selectable": True} for i in df_sample],
+        return col[0]
+    return None
 

@@ -64,14 +64,13 @@ div_initial_df = html.Div(
                     column_selectable="multi",
                     selected_columns=[],
                     virtualization=True,
-                    style_table={"height": "350px", "marginLeft": 75, "width": "90%", "overflowY": "auto",
-                                 "overflowX": "auto"},
-                    style_cell_conditional=[
-                        {"if": {"column_id": c}, "textAlign": "left"} for c in ["Date", "Region"]],
+                    style_table={"height": "350px", "marginLeft": 70, "marginRight": 70, "width": 1500, "overflowY":
+                                 "auto", "overflowX": "auto"},
+
                     style_data_conditional=[
                         {"if": {"row_index": "odd"}, "backgroundColor": "rgb(248, 248, 248)"}
                     ],
-                    style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
+                    style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px'}
                 ),
                 dbc.Button(id="validate_columns", n_clicks=0, children="Submit", color="secondary",
                            href="/classification"),

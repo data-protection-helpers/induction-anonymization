@@ -7,6 +7,10 @@ import dash_table
 import json
 from app import app
 
+import base64
+import datetime
+import io
+
 import pandas as pd
 
 df = pd.read_csv("../data/statistical-generative-modeling-sample.csv.bz2")
@@ -17,6 +21,23 @@ df_sample_types = {}
 
 div_initial_df = html.Div(
     [
+        dcc.Upload(
+            id='upload-data',
+            children=html.Div(['Drag and Drop or ', html.A('Select Files')]),
+            style={
+                'width': '100%',
+                'height': '60px',
+                'lineHeight': '60px',
+                'borderWidth': '1px',
+                'borderStyle': 'dashed',
+                'borderRadius': '5px',
+                'textAlign': 'center',
+                'margin': '10px'
+            },
+            # Allow multiple files to be uploaded
+            multiple=False
+        ),
+        #html.Div(id='output-data-upload'),
         html.Div(
             [
                 html.H3("Select columns you want to keep", id="guideline", style={"textAlign": "center"}),
@@ -40,8 +61,8 @@ div_initial_df = html.Div(
             [
                 dash_table.DataTable(
                     id="initial_table",
-                    columns=[{"name": i, "id": i, "selectable": True} for i in df.columns],
-                    data=df.to_dict("records"),
+                    #columns=[{"name": i, "id": i, "selectable": True} for i in df.columns],
+                    #data=df.to_dict("records"),
                     column_selectable="multi",
                     selected_columns=[],
                     virtualization=True,
@@ -63,11 +84,14 @@ div_initial_df = html.Div(
         ),
 
 
+
     ],
     id="div_initial_df",
     style={"marginTop": 10, "marginLeft": 300, "width": "78%", "height": "550px", "padding": "2rem", "display": "flex",
            "flex-direction": "column", "background-color": "#f8f9fa"}
 )
+
+
 
 
 layout = html.Div(
@@ -95,6 +119,40 @@ def select_all_columns(value):
 def store_reduced_data_information( n_clicks, selected_columns,):
     df_sample = df[selected_columns]
     return df_sample.to_json(date_format="iso", orient="split")
+
+
+def parse_contents(contents, filename, date):
+    content_type, content_string = contents.split(',')
+
+    decoded = base64.b64decode(content_string)
+    try:
+        if 'csv' in filename:
+            # Assume that the user uploaded a CSV file
+            df = pd.read_csv(
+                io.StringIO(decoded.decode('utf-8')))
+        elif 'xls' in filename:
+            # Assume that the user uploaded an excel file
+            df = pd.read_excel(io.BytesIO(decoded))
+
+    except Exception as e:
+        print(e)
+        return html.Div([
+            'There was an error processing this file.'
+        ])
+
+    return df[:100].to_dict('records'), [{'name': i, 'id': i, 'selectable': True} for i in df[:100].columns]
+
+
+@app.callback([Output('initial_table', 'data'),
+              Output('initial_table', 'columns')],
+              [Input('upload-data', 'contents')],
+              [State('upload-data', 'filename'),
+               State('upload-data', 'last_modified')])
+def update_output(list_of_contents, list_of_names, list_of_dates):
+    if list_of_contents is not None:
+        data, columns = parse_contents(list_of_contents, list_of_names, list_of_dates)
+        return data, columns
+    return None, None
 
 
 if __name__ == "__main__":

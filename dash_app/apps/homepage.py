@@ -23,10 +23,10 @@ div_initial_df = html.Div(
     [
         dcc.Upload(
             id='upload-data',
-            children=html.Div(['Drag and Drop or ', html.A('Select Files')]),
+            children=html.Div(['Drag and Drop or ', html.A('Select a file')]),
             style={
                 'width': '100%',
-                'height': '60px',
+                'height': '250px',
                 'lineHeight': '60px',
                 'borderWidth': '1px',
                 'borderStyle': 'dashed',
@@ -37,28 +37,20 @@ div_initial_df = html.Div(
             # Allow multiple files to be uploaded
             multiple=False
         ),
-        #html.Div(id='output-data-upload'),
-        html.Div(
-            [
-                html.H3("Select columns you want to keep", id="guideline", style={"textAlign": "center"}),
-            ],
-            style={"display": "flex", "flex-direction": "column", "align-items": "center"}
-        ),
 
         html.Div(
             [
+                html.H3("Select columns you want to keep", id="guideline", style={"textAlign": "center"}),
+
+
+
                 dcc.Checklist(
                     id="select_all_init",
                     options=[{'label': 'Select all', 'value': 'select_all'}],
                     value=[],
                     style={"fontWeight": "bold"}
                 ),
-            ],
-            style={"display": "flex", "flex-direction": "column", "align-items": "left"}
-        ),
 
-        html.Div(
-            [
                 dash_table.DataTable(
                     id="initial_table",
                     #columns=[{"name": i, "id": i, "selectable": True} for i in df.columns],
@@ -66,7 +58,7 @@ div_initial_df = html.Div(
                     column_selectable="multi",
                     selected_columns=[],
                     virtualization=True,
-                    style_table={"height": "350px", "marginLeft": 50, "width": "90%", "overflowY": "auto",
+                    style_table={"height": "350px", "marginLeft": 75, "width": "90%", "overflowY": "auto",
                                  "overflowX": "auto"},
                     style_cell_conditional=[
                         {"if": {"column_id": c}, "textAlign": "left"} for c in ["Date", "Region"]],
@@ -80,15 +72,13 @@ div_initial_df = html.Div(
 
 
             ],
-            style={"display": "flex", "flex-direction": "column", "align-items": "center"}
+            id="div_initial_table",
+            style={"display": "none"}
         ),
-
-
-
     ],
     id="div_initial_df",
-    style={"marginTop": 10, "marginLeft": 300, "width": "78%", "height": "550px", "padding": "2rem", "display": "flex",
-           "flex-direction": "column", "background-color": "#f8f9fa"}
+    style={"marginTop": 10, "marginLeft": 300, "width": 1570, "height": 900, "padding": "2rem", "display": "flex",
+           "flex-direction": "column", "background-color": "#f8f9fa", "justify-content": "space-around"}
 )
 
 
@@ -111,6 +101,7 @@ def select_all_columns(value):
         return [i for i in df.columns]
     return []
 
+
 @app.callback(
     Output("storage_sample_df", "data"),
     [Input("validate_columns", "n_clicks")],
@@ -127,11 +118,11 @@ def parse_contents(contents, filename, date):
     decoded = base64.b64decode(content_string)
     try:
         if 'csv' in filename:
-            # Assume that the user uploaded a CSV file
+            # if the user uploads a CSV file
             df = pd.read_csv(
                 io.StringIO(decoded.decode('utf-8')))
         elif 'xls' in filename:
-            # Assume that the user uploaded an excel file
+            # if the user uploads an excel file: to try
             df = pd.read_excel(io.BytesIO(decoded))
 
     except Exception as e:
@@ -143,7 +134,8 @@ def parse_contents(contents, filename, date):
     return df[:100].to_dict('records'), [{'name': i, 'id': i, 'selectable': True} for i in df[:100].columns]
 
 
-@app.callback([Output('initial_table', 'data'),
+@app.callback([Output("div_initial_table", "style"),
+              Output('initial_table', 'data'),
               Output('initial_table', 'columns')],
               [Input('upload-data', 'contents')],
               [State('upload-data', 'filename'),
@@ -151,8 +143,8 @@ def parse_contents(contents, filename, date):
 def update_output(list_of_contents, list_of_names, list_of_dates):
     if list_of_contents is not None:
         data, columns = parse_contents(list_of_contents, list_of_names, list_of_dates)
-        return data, columns
-    return None, None
+        return {"display": "flex", "flex-direction": "column", "align-items": "center"}, data, columns
+    return {"display": "none"}, None, None
 
 
 if __name__ == "__main__":

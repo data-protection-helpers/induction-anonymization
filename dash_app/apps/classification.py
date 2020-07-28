@@ -256,7 +256,7 @@ def stores_partial_classification(n_clicks, selected_columns, df_sample_types, d
      State("anony_dropdown", "value")]
 )
 def updates_classification_page(jsonified_df_sample, n_clicks, select_all, selected_columns, columns, value_type,
-                                       value_technique):
+                                value_technique):
 
     if jsonified_df_sample is not None:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")

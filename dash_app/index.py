@@ -33,9 +33,9 @@ app.layout = html.Div(
                 # from synthetic_data
                 dcc.Store(id="storage_pearson_graph_gen", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_pearson_graph_init", storage_type="local", clear_data=True),
-                dcc.Store(id="storage_generated_table_cat", storage_type="local", clear_data=True),
-                dcc.Store(id="storage_generated_table_num", storage_type="local", clear_data=True),
-                dcc.Store(id="storage_sample_df_num", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_synthetic_table_cat", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_synthetic_table_num", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_sample_synth_df_num", storage_type="local", clear_data=True),
 
                 dcc.Store(id="storage_whole_generated_table", storage_type="local", clear_data=True),
 

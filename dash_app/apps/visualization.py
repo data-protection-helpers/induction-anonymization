@@ -23,7 +23,7 @@ div_graph1 = html.Div(
                 dcc.Graph(
                     id="pearson_init",
                     style={"textAlign": "center"},
-                    figure={'data': [], 'layout': {'title': 'Initial dataframe'}}
+
                 ),
                 dcc.Graph(
                     id="pearson_gen",
@@ -31,13 +31,12 @@ div_graph1 = html.Div(
                 )
             ],
             style={"display": "flex", "flex-direction": "row"}
-
         )
-
     ],
     style={"marginLeft": 300, "marginTop": 10, "width": "78%", "height": "550px", "display": "flex", "padding": "2rem",
            "flex-direction": "column", "align-items": "center", "background-color": "#f8f9fa"}
 )
+
 
 div_graph2 = html.Div(
     [
@@ -51,25 +50,23 @@ div_graph2 = html.Div(
 
             style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
         ),
-
         html.Div(
             [
                 dcc.Graph(
-                    id="plot_graph_init",
+                    id="scatter_graph_init",
                     style={"textAlign": "center"},
                 ),
                 dcc.Graph(
-                    id="plot_graph_gen",
+                    id="scatter_graph_gen",
                     style={"textAlign": "center"}
                 )
             ],
             style={"display": "flex", "flex-direction": "row"}
-
         )
-
     ],
     style={"marginLeft": 300, "marginTop": 10, "width": "78%", "height": "750px", "display": "flex", "padding": "2rem",
-           "flex-direction": "column", "justify-content": "space-evenly", "align-items": "center", "background-color": "#f8f9fa"}
+           "flex-direction": "column", "justify-content": "space-evenly", "align-items": "center", "background-color":
+               "#f8f9fa"}
 )
 
 
@@ -85,20 +82,15 @@ div_graph3 = html.Div(
 
             style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
         ),
-
-
         dcc.Graph(
             id="distr_graph",
             style={"textAlign": "center"},
         ),
-
-
-
     ],
     style={"marginLeft": 300, "marginTop": 10, "width": "78%", "height": "750px", "display": "flex", "padding": "2rem",
-           "flex-direction": "column", "justify-content": "space-evenly", "align-items": "center", "background-color": "#f8f9fa"}
+           "flex-direction": "column", "justify-content": "space-evenly", "align-items": "center", "background-color":
+               "#f8f9fa"}
 )
-
 
 
 layout = html.Div(
@@ -111,53 +103,56 @@ layout = html.Div(
     id="results_layout"
 )
 
-
+# displays pearson plot of generated data
 @app.callback(
     Output("pearson_gen", "figure"),
     [Input("storage_pearson_graph_gen", "data")]
 )
-def store_generated_pearson_plot(data):
+def displays_generated_pearson_plot(data):
     if data is not None:
         return data
     return {'data': [], 'layout': {'title': 'Initial dataframe'}}
 
+
+# displays pearson plot of initial data
 @app.callback(
     Output("pearson_init", "figure"),
     [Input("storage_pearson_graph_init", "data")]
 )
-def store_initial_pearson_plot(data):
+def displays_initial_pearson_plot(data):
     if data is not None:
         return data
     return {'data': [], 'layout': {'title': 'Initial dataframe'}}
 
 
-
+# used to have synthetic attributes names as headers of dataframes to be selected for plot display
 @app.callback(
     [Output("df_columns_scatter", "columns"),
      Output("df_columns_distribution", "columns")],
     [Input("storage_sample_df", "data"),
-     Input("storage_synth_attributes", "data")
-    ]
+     Input("storage_synth_attributes", "data")]
 )
-def update_initial_table(jsonified_data, synth_attributes):
-    if jsonified_data is not None:
-        df_synth = pd.read_json(jsonified_data, orient="split")
-        col_synth = [{"name": i, "id": i, "selectable": True} for i in df_synth.columns if i in synth_attributes],
+def updates_headers(jsonified_df_sample, synth_attributes):
+    if jsonified_df_sample is not None:
+        df_sample = pd.read_json(jsonified_df_sample, orient="split")
+        col_synth = [{"name": i, "id": i, "selectable": True} for i in df_sample.columns if i in synth_attributes],
         return col_synth[0], col_synth[0]
     return None, None
 
+
+# computes scatter plots
 @app.callback(
-    [Output("plot_graph_init", "figure"),
-     Output("plot_graph_gen", "figure")],
+    [Output("scatter_graph_init", "figure"),
+     Output("scatter_graph_gen", "figure")],
     [Input("df_columns_scatter", "selected_columns"),
-     Input("storage_generated_table_num", "data"),
-     Input("storage_sample_df_num", "data"),
-     Input("storage_types", "data"),]
+     Input("storage_synthetic_table_num", "data"),
+     Input("storage_sample_synth_df_num", "data"),
+     Input("storage_types", "data")]
 )
-def renders_plot(selected_columns, jsonified_data1, jsonified_data2, types):
-    if jsonified_data1 is not None and jsonified_data2 is not None and selected_columns !=[]:
-        df_gen_num = pd.read_json(jsonified_data1, orient="split")
-        df_sample_num = pd.read_json(jsonified_data2, orient="split")
+def renders_plot(selected_columns, jsonified_gen_synth_num, jsonified_sample_synth_num, types):
+    if jsonified_gen_synth_num is not None and jsonified_sample_synth_num is not None and selected_columns !=[]:
+        df_gen_synth_num = pd.read_json(jsonified_gen_synth_num, orient="split")
+        df_sample_synth_num = pd.read_json(jsonified_sample_synth_num, orient="split")
 
         if len(selected_columns) == 2:
             if types[selected_columns[0]] == "Categorical":
@@ -170,24 +165,25 @@ def renders_plot(selected_columns, jsonified_data1, jsonified_data2, types):
             else:
                 attribute2 = selected_columns[1]
 
-            fig_init = px.scatter(df_sample_num, x=attribute1, y=attribute2, title="Initial dataframe")
-            fig_gen = px.scatter(df_gen_num, x=attribute1, y=attribute2, title="Generated dataframe")
+            fig_init = px.scatter(df_sample_synth_num, x=attribute1, y=attribute2, title="Initial dataframe")
+            fig_gen = px.scatter(df_gen_synth_num, x=attribute1, y=attribute2, title="Generated dataframe")
 
             return fig_init, fig_gen
     return {'data': [], 'layout': {}}, {'data': [], 'layout': {}}
 
 
+# computes distribution plot
 @app.callback(
     Output("distr_graph", "figure"),
     [Input("df_columns_distribution", "selected_columns"),
-     Input("storage_generated_table_num", "data"),
-     Input("storage_sample_df_num", "data"),
-     Input("storage_types", "data"),]
+     Input("storage_synthetic_table_num", "data"),
+     Input("storage_sample_synth_df_num", "data"),
+     Input("storage_types", "data")]
 )
-def renders_plot(selected_columns, jsonified_data1, jsonified_data2, types):
-    if jsonified_data1 is not None and jsonified_data2 is not None and selected_columns !=[]:
-        df_gen_num = pd.read_json(jsonified_data1, orient="split")
-        df_sample_num = pd.read_json(jsonified_data2, orient="split")
+def renders_plot(selected_columns, jsonified_gen_synth_num, jsonified_sample_synth_num, types):
+    if jsonified_gen_synth_num is not None and jsonified_sample_synth_num is not None and selected_columns !=[]:
+        df_gen_synth_num = pd.read_json(jsonified_gen_synth_num, orient="split")
+        df_sample_synth_num = pd.read_json(jsonified_sample_synth_num, orient="split")
 
         if types[selected_columns[0]] == "Categorical":
             attribute = selected_columns[0] + "_NUM"
@@ -195,11 +191,10 @@ def renders_plot(selected_columns, jsonified_data1, jsonified_data2, types):
             attribute = selected_columns[0]
 
         fig = go.Figure()
-        fig.add_trace(go.Histogram(x=df_gen_num[attribute], name="Generated dataframe") )
-        fig.add_trace(go.Histogram(x=df_sample_num[attribute], name="Initial dataframe"))
+        fig.add_trace(go.Histogram(x=df_gen_synth_num[attribute], name="Generated dataframe") )
+        fig.add_trace(go.Histogram(x=df_sample_synth_num[attribute], name="Initial dataframe"))
 
         fig.update_layout(barmode='overlay')
-
         fig.update_traces(opacity=0.75)
 
         return fig

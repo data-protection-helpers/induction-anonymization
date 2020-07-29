@@ -3,7 +3,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 
-from apps import homepage, synthetic_data , results, classification, visualization
+from apps import homepage, results, classification, visualization
 from app import app
 from components import sidebar
 import dash_table

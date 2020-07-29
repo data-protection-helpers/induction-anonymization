@@ -38,11 +38,15 @@ div_initial_df = html.Div(
             multiple=False
         ),
 
+
         html.Div(
             [
-                html.H3("Select columns you want to keep", id="guideline", style={"textAlign": "center"}),
-
-
+                html.Div(
+                    [
+                        html.H3("Select columns you want to keep", id="guideline", style={"textAlign": "center"}),
+                    ],
+                    style={"display": "flex", "flex-direction": "column", "align-items": "center"}
+                ),
                 html.Div(
                     [
                         dcc.Checklist(
@@ -55,35 +59,41 @@ div_initial_df = html.Div(
                     ],
                     style={"display": "flex", "flex-direction": "column", "align-items": "left"}
                 ),
+                html.Div(
+                    [
+                        dash_table.DataTable(
+                            id="initial_table",
+                            # columns=[{"name": i, "id": i, "selectable": True} for i in df.columns],
+                            # data=df.to_dict("records"),
+                            column_selectable="multi",
+                            selected_columns=[],
+                            virtualization=True,
+                            style_table={"height": "350px", "marginLeft": 70, "marginRight": 70, "width": 1500,
+                                         "overflowY":
+                                             "auto", "overflowX": "auto"},
 
+                            style_data_conditional=[
+                                {"if": {"row_index": "odd"}, "backgroundColor": "rgb(248, 248, 248)"}
+                            ],
+                            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold",
+                                          'padding-left': '20px'}
+                        ),
+                        dbc.Button(id="validate_columns", n_clicks=0, children="Submit", color="secondary",
+                                                   href="/classification"),
 
-                dash_table.DataTable(
-                    id="initial_table",
-                    #columns=[{"name": i, "id": i, "selectable": True} for i in df.columns],
-                    #data=df.to_dict("records"),
-                    column_selectable="multi",
-                    selected_columns=[],
-                    virtualization=True,
-                    style_table={"height": "350px", "marginLeft": 70, "marginRight": 70, "width": 1500, "overflowY":
-                                 "auto", "overflowX": "auto"},
-
-                    style_data_conditional=[
-                        {"if": {"row_index": "odd"}, "backgroundColor": "rgb(248, 248, 248)"}
                     ],
-                    style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px'}
-                ),
-                dbc.Button(id="validate_columns", n_clicks=0, children="Submit", color="secondary",
-                           href="/classification"),
-
-
+                    style={"display": "flex", "flex-direction": "column", "align-items": "center"}
+                )
             ],
             id="div_initial_table",
             style={"display": "none"}
         ),
+
     ],
     id="div_initial_df",
     style={"marginTop": 10, "marginLeft": 300, "width": 1570, "height": 900, "padding": "2rem", "display": "flex",
            "flex-direction": "column", "background-color": "#f8f9fa", "justify-content": "space-around"}
+
 )
 
 
@@ -146,7 +156,7 @@ def parse_contents(contents, filename, date):
 def update_output(list_of_contents, list_of_names, list_of_dates):
     if list_of_contents is not None:
         data, columns = parse_contents(list_of_contents, list_of_names, list_of_dates)
-        return {"display": "flex", "flex-direction": "column", "align-items": "center"}, data, columns
+        return {"display": "flex", "flex-direction": "column"}, data, columns
     return {"display": "none"}, None, None
 
 

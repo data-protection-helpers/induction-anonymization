@@ -33,8 +33,9 @@ div_graph1 = html.Div(
             style={"display": "flex", "flex-direction": "row"}
         )
     ],
-    style={"marginLeft": 300, "marginTop": 10, "width": "78%", "height": "550px", "display": "flex", "padding": "2rem",
-           "flex-direction": "column", "align-items": "center", "background-color": "#f8f9fa"}
+    style={"height": "550px", "display": "flex", "flex-direction": "column", "align-items": "center", "border-radius":
+           "5px", "background-color": "#f9f9f9", "margin": "10px", "padding": "15px", "box-shadow": "2px 2px 2px "
+                                                                                                    "lightgrey"}
 )
 
 
@@ -48,7 +49,7 @@ div_graph2 = html.Div(
             virtualization=True,
             style_table={"overflowX": "auto", "width": 700},
 
-            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
+            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px'}
         ),
         html.Div(
             [
@@ -64,9 +65,9 @@ div_graph2 = html.Div(
             style={"display": "flex", "flex-direction": "row"}
         )
     ],
-    style={"marginLeft": 300, "marginTop": 10, "width": "78%", "height": "750px", "display": "flex", "padding": "2rem",
-           "flex-direction": "column", "justify-content": "space-evenly", "align-items": "center", "background-color":
-               "#f8f9fa"}
+    style={"height": "750px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
+           "align-items": "center", "border-radius": "5px", "background-color": "#f9f9f9", "margin": "10px", "padding":
+           "15px", "box-shadow": "2px 2px 2px lightgrey"}
 )
 
 
@@ -80,16 +81,17 @@ div_graph3 = html.Div(
             virtualization=True,
             style_table={"overflowX": "auto", "width": 700},
 
-            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
+            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px'}
         ),
         dcc.Graph(
             id="distr_graph",
             style={"textAlign": "center"},
         ),
     ],
-    style={"marginLeft": 300, "marginTop": 10, "width": "78%", "height": "750px", "display": "flex", "padding": "2rem",
-           "flex-direction": "column", "justify-content": "space-evenly", "align-items": "center", "background-color":
-               "#f8f9fa"}
+    style={"height": "750px", "display": "flex",
+           "flex-direction": "column", "justify-content": "space-evenly", "align-items": "center", "border-radius":
+               "5px", "background-color": "#f9f9f9", "margin": "10px", "padding": "15px", "box-shadow": "2px 2px 2px "
+                                                                                                        "lightgrey"}
 )
 
 
@@ -99,7 +101,7 @@ layout = html.Div(
         div_graph2,
         div_graph3
     ],
-    style={"display": "flex", "flex-direction": "column"},
+    style={"display": "flex", "flex-direction": "column", "marginLeft": 300, "marginTop": 10,},
     id="results_layout"
 )
 

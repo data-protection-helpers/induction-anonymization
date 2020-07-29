@@ -58,7 +58,7 @@ div_sample_df = html.Div(
                          "background_color": "#EAD8D7",
                          },
                     ],
-                    style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
+                    style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px'}
                 ),
             ],
             style={"display": "flex", "flex-direction": "column", "align-items": "center"}

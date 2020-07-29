@@ -115,11 +115,13 @@ def stores_generated_df_information(n_clicks1, n_clicks2, swap_attributes, mask_
 
         elif n_clicks2 >0:
 
+
             pearson_synth_gen, pearson_synth_init, df_gen_synth_cat, df_gen_synth_num, df_sample_synth_num = \
                 treatment_statistical(df_sample[synth_attributes], categorical_columns)
 
             # we add initial columns for swapping and masking attributes to the synthetic generated dataframe
             table = df_gen_synth_cat.copy()
+
             for attribute in swap_attributes + mask_attributes:
                 table[attribute] = df_sample[attribute]
 

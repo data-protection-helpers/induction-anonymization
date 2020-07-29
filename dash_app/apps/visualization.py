@@ -35,7 +35,8 @@ div_graph1 = html.Div(
     ],
     style={"height": "550px", "display": "flex", "flex-direction": "column", "align-items": "center", "border-radius":
            "5px", "background-color": "#f9f9f9", "margin": "10px", "padding": "15px", "box-shadow": "2px 2px 2px "
-                                                                                                    "lightgrey"}
+                                                                                                    "lightgrey"},
+    id="div_graph1"
 )
 
 
@@ -67,7 +68,8 @@ div_graph2 = html.Div(
     ],
     style={"height": "750px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
            "align-items": "center", "border-radius": "5px", "background-color": "#f9f9f9", "margin": "10px", "padding":
-           "15px", "box-shadow": "2px 2px 2px lightgrey"}
+           "15px", "box-shadow": "2px 2px 2px lightgrey"},
+    id="div_graph2"
 )
 
 
@@ -91,7 +93,8 @@ div_graph3 = html.Div(
     style={"height": "750px", "display": "flex",
            "flex-direction": "column", "justify-content": "space-evenly", "align-items": "center", "border-radius":
                "5px", "background-color": "#f9f9f9", "margin": "10px", "padding": "15px", "box-shadow": "2px 2px 2px "
-                                                                                                        "lightgrey"}
+                                                                                                        "lightgrey"},
+    id="div_graph3"
 )
 
 
@@ -127,19 +130,54 @@ def displays_initial_pearson_plot(data):
     return {'data': [], 'layout': {'title': 'Initial dataframe'}}
 
 
+
+@app.callback(
+    [Output("div_graph1", "style"),
+     Output("div_graph2", "style"),
+     Output("div_graph3", "style")],
+    [Input("storage_synth_attributes", "data")]
+)
+def undisplays_graphs(synth_attributes):
+    if len(synth_attributes) == 1:
+        return {"display": "none"}, {"display": "none"}, {"height": "750px", "display": "flex",
+           "flex-direction": "column", "justify-content": "space-evenly", "align-items": "center", "border-radius":
+               "5px", "background-color": "#f9f9f9", "margin": "10px", "padding": "15px", "box-shadow": "2px 2px 2px "
+                                                                                                        "lightgrey"}
+    elif len(synth_attributes) == 0:
+        return {"display": "none"}, {"display": "none"}, {"display": "none"}
+
+    return {"height": "550px", "display": "flex", "flex-direction": "column", "align-items": "center", "border-radius":
+            "5px", "background-color": "#f9f9f9", "margin": "10px", "padding": "15px", "box-shadow": "2px 2px 2px "
+            "lightgrey"},\
+           {"height": "750px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
+            "align-items": "center", "border-radius": "5px", "background-color": "#f9f9f9", "margin": "10px", "padding":
+            "15px", "box-shadow": "2px 2px 2px lightgrey"}, \
+           {"height": "750px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
+            "align-items": "center", "border-radius": "5px", "background-color": "#f9f9f9", "margin": "10px", "padding":
+            "15px", "box-shadow": "2px 2px 2px lightgrey"}
+
+
+
 # used to have synthetic attributes names as headers of dataframes to be selected for plot display
 @app.callback(
     [Output("df_columns_scatter", "columns"),
-     Output("df_columns_distribution", "columns")],
+     Output("df_columns_distribution", "columns"),
+     Output("df_columns_scatter", "selected_columns"),
+     Output("df_columns_distribution", "selected_columns")],
     [Input("storage_sample_df", "data"),
      Input("storage_synth_attributes", "data")]
 )
 def updates_headers(jsonified_df_sample, synth_attributes):
     if jsonified_df_sample is not None:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
-        col_synth = [{"name": i, "id": i, "selectable": True} for i in df_sample.columns if i in synth_attributes],
-        return col_synth[0], col_synth[0]
-    return None, None
+        col_synth = [{"name": i, "id": i, "selectable": True} for i in df_sample.columns if i in synth_attributes]
+        if len(col_synth) >= 2:
+            return col_synth, col_synth, [col_synth[0]["name"], col_synth[1]["name"]], [col_synth[0]["name"]]
+        elif len(col_synth) == 1:
+            return col_synth, col_synth, [], [col_synth[0]["name"]]
+        else:
+            return col_synth, col_synth, None, None
+    return None, None, None, None
 
 
 # computes scatter plots
@@ -183,7 +221,7 @@ def renders_plot(selected_columns, jsonified_gen_synth_num, jsonified_sample_syn
      Input("storage_types", "data")]
 )
 def renders_plot(selected_columns, jsonified_gen_synth_num, jsonified_sample_synth_num, types):
-    if jsonified_gen_synth_num is not None and jsonified_sample_synth_num is not None and selected_columns !=[]:
+    if jsonified_gen_synth_num is not None and jsonified_sample_synth_num is not None and selected_columns != []:
         df_gen_synth_num = pd.read_json(jsonified_gen_synth_num, orient="split")
         df_sample_synth_num = pd.read_json(jsonified_sample_synth_num, orient="split")
 

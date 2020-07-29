@@ -29,15 +29,20 @@ app.layout = html.Div(
                 dcc.Store(id="storage_types", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_techniques", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_glob_sample_df", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_main_classification_button", storage_type="local", clear_data=True),
 
                 # from synthetic_data
-                dcc.Store(id="storage_pearson_graph_gen", storage_type="local", clear_data=True),
-                dcc.Store(id="storage_pearson_graph_init", storage_type="local", clear_data=True),
-                dcc.Store(id="storage_synthetic_table_cat", storage_type="local", clear_data=True),
-                dcc.Store(id="storage_synthetic_table_num", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_pearson_gen_SMOTE", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_pearson_gen_STAT", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_pearson_init", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_synthetic_table_cat_SMOTE", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_synthetic_table_num_SMOTE", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_synthetic_table_cat_STAT", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_synthetic_table_num_STAT", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_sample_synth_df_num", storage_type="local", clear_data=True),
 
-                dcc.Store(id="storage_whole_generated_table", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_whole_generated_table_SMOTE", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_whole_generated_table_STAT", storage_type="local", clear_data=True),
 
 
             ],

@@ -104,7 +104,7 @@ layout = html.Div(
 @app.callback(
     [Output("generated_table_res", "columns"),
      Output("generated_table_res", "data")],
-    [Input("storage_whole_generated_table", "data")]
+    [Input("storage_whole_generated_table_SMOTE", "data")]
 )
 def update_initial_table(jsonified_data):
     if jsonified_data is not None:

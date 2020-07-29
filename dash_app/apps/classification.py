@@ -121,8 +121,7 @@ div_classification = html.Div(
 
         html.Div(
             [
-                dbc.Button(id="validate_total_classification", n_clicks=0, children="Submit", color="secondary",
-                           href="/synthetic_data"),
+                dbc.Button(id="validate_total_classification", n_clicks=0, children="Submit", color="secondary"),
             ], style={"display": "flex", "flex-direction": "column", "align-items": "center"}
         ),
     ],
@@ -139,6 +138,18 @@ layout = html.Div(
     style={"display": "flex", "flex-direction": "column"}
 )
 
+
+@app.callback(
+    Output("validate_total_classification", "href"),
+    [Input("storage_synth_attributes", "data")]
+)
+def redirects_main_button(synth_attributes):
+    # if no attributes are selected for synthesization, the user is redirected to results page
+    if synth_attributes is None or len(synth_attributes) == 0:
+        return "/results"
+    # else the user is redirected to the synthetic data visualization page
+    else:
+        return "/visualization"
 
 # enables the partial classification button to save partial choices for attributes classification
 @app.callback(
@@ -206,11 +217,10 @@ def updates_guideline(selected_columns):
     [Output("storage_synth_attributes", "data"),
      Output("storage_swap_attributes", "data"),
      Output("storage_mask_attributes", "data")],
-    [Input("validate_total_classification", "n_clicks")],
-    [State("storage_techniques", "data")],
+    [Input("storage_techniques", "data")],
 
 )
-def stores_anonymisation_techniques(n_clicks, df_sample_techniques):
+def stores_anonymisation_techniques(df_sample_techniques):
     if df_sample_techniques is not None:
         synthesization_attributes = []
         swapping_attributes = []
@@ -308,6 +318,11 @@ def updates_classification_page(jsonified_df_sample, n_clicks, select_all, selec
 
 
 
-
+@app.callback(
+    Output("storage_main_classification_button", "data"),
+    [Input("validate_total_classification", "n_clicks")]
+)
+def stores_validation_classification(n_clicks):
+    return n_clicks
 
 

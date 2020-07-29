@@ -14,8 +14,10 @@ from swapping import swap
 from masking import complete_masking
 import pandas as pd
 
+
 df = pd.read_csv("../data/statistical-generative-modeling-sample.csv.bz2")
 df = df[:100]
+
 
 div_graph1_smote = html.Div(
     [
@@ -58,6 +60,7 @@ div_graph1_stat = html.Div(
     style={"display": "none"},
     id="div_graph1_STAT"
 )
+
 
 div_graph2_smote = html.Div(
     [
@@ -118,6 +121,7 @@ div_graph2_stat = html.Div(
     style={"display": "none"},
     id="div_graph2_STAT"
 )
+
 
 div_graph3_smote = html.Div(
     [
@@ -199,14 +203,14 @@ div_tab = html.Div(
     id="div_graph1"
 )
 
+
 layout = html.Div(
     [
         div_tab,
     ],
     style={"display": "flex", "flex-direction": "column", "marginLeft": 300, "marginTop": 10},
-    id="results_layout"
+    id="viz_layout"
 )
-
 
 # displays pearson plot of generated data
 @app.callback(
@@ -217,7 +221,6 @@ def displays_generated_pearson_plot(data):
     if data is not None:
         return data
     return {'data': [], 'layout': {'title': 'Generated dataframe'}}
-
 
 @app.callback(
     Output("pearson_gen_STAT", "figure"),
@@ -238,8 +241,8 @@ def displays_generated_pearson_plot(data):
 def displays_initial_pearson_plot(data):
     if data is not None:
         return data, data
-    return {'data': [], 'layout': {'title': 'Initial dataframe'}}, {'data': [],
-                                                                    'layout': {'title': 'Initial dataframe'}}
+    return {'data': [], 'layout': {'title': 'Initial dataframe'}}, {'data': [], 'layout': {'title': 'Initial dataframe'}}
+
 
 
 @app.callback(
@@ -249,6 +252,7 @@ def displays_initial_pearson_plot(data):
     [Input("storage_synth_attributes", "data")]
 )
 def undisplays_graphs1(synth_attributes):
+
     if synth_attributes is None or len(synth_attributes) == 0:
         return {"display": "none"}, {"display": "none"}, {"display": "none"}
 
@@ -257,7 +261,7 @@ def undisplays_graphs1(synth_attributes):
                                                           "flex-direction": "column", "justify-content": "space-evenly",
                                                           "align-items": "center", "border-radius": "5px",
                                                           "background-color": "#f9f9f9", "margin": "10px", "padding":
-                                                              "15px", "box-shadow": "2px 2px 2px lightgrey"}
+                                                          "15px", "box-shadow": "2px 2px 2px lightgrey"}
 
     else:
         return {"height": "550px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
@@ -269,8 +273,9 @@ def undisplays_graphs1(synth_attributes):
                {"height": "550px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
                 "align-items": "center", "border-radius": "5px", "background-color": "#f9f9f9", "margin": "10px",
                 "padding": "15px", "box-shadow": "2px 2px 2px lightgrey"}, \
- \
- \
+
+
+
 @app.callback(
     [Output("div_graph1_STAT", "style"),
      Output("div_graph2_STAT", "style"),
@@ -296,8 +301,8 @@ def undisplays_graphs2(synth_attributes):
                {"height": "550px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
                 "align-items": "center", "border-radius": "5px", "background-color": "#f9f9f9", "margin": "10px",
                 "padding": "15px", "box-shadow": "2px 2px 2px lightgrey"}, \
- \
- \
+
+
 # used to have synthetic attributes names as headers of dataframes to be selected for plot display
 @app.callback(
     [Output("df_columns_scatter_SMOTE", "columns"),
@@ -318,7 +323,6 @@ def updates_headers(jsonified_df_sample, synth_attributes):
         else:
             return col_synth, col_synth, None, None
     return None, None, None, None
-
 
 @app.callback(
     [Output("df_columns_scatter_STAT", "columns"),
@@ -351,7 +355,7 @@ def updates_headers(jsonified_df_sample, synth_attributes):
      Input("storage_types", "data")]
 )
 def renders_plot(selected_columns, jsonified_gen_synth_num, jsonified_sample_synth_num, types):
-    if jsonified_gen_synth_num is not None and jsonified_sample_synth_num is not None and selected_columns != []:
+    if jsonified_gen_synth_num is not None and jsonified_sample_synth_num is not None and selected_columns !=[]:
         df_gen_synth_num = pd.read_json(jsonified_gen_synth_num, orient="split")
         df_sample_synth_num = pd.read_json(jsonified_sample_synth_num, orient="split")
 
@@ -371,7 +375,6 @@ def renders_plot(selected_columns, jsonified_gen_synth_num, jsonified_sample_syn
 
             return fig_init, fig_gen
     return {'data': [], 'layout': {}}, {'data': [], 'layout': {}}
-
 
 @app.callback(
     [Output("scatter_graph_init_STAT", "figure"),
@@ -382,7 +385,7 @@ def renders_plot(selected_columns, jsonified_gen_synth_num, jsonified_sample_syn
      Input("storage_types", "data")]
 )
 def renders_plot(selected_columns, jsonified_gen_synth_num, jsonified_sample_synth_num, types):
-    if jsonified_gen_synth_num is not None and jsonified_sample_synth_num is not None and selected_columns != []:
+    if jsonified_gen_synth_num is not None and jsonified_sample_synth_num is not None and selected_columns !=[]:
         df_gen_synth_num = pd.read_json(jsonified_gen_synth_num, orient="split")
         df_sample_synth_num = pd.read_json(jsonified_sample_synth_num, orient="split")
 
@@ -402,6 +405,7 @@ def renders_plot(selected_columns, jsonified_gen_synth_num, jsonified_sample_syn
 
             return fig_init, fig_gen
     return {'data': [], 'layout': {}}, {'data': [], 'layout': {}}
+
 
 
 # computes distribution plot
@@ -423,7 +427,7 @@ def renders_plot(selected_columns, jsonified_gen_synth_num, jsonified_sample_syn
             attribute = selected_columns[0]
 
         fig = go.Figure()
-        fig.add_trace(go.Histogram(x=df_gen_synth_num[attribute], name="Generated dataframe"))
+        fig.add_trace(go.Histogram(x=df_gen_synth_num[attribute], name="Generated dataframe") )
         fig.add_trace(go.Histogram(x=df_sample_synth_num[attribute], name="Initial dataframe"))
 
         fig.update_layout(barmode='overlay')
@@ -432,7 +436,6 @@ def renders_plot(selected_columns, jsonified_gen_synth_num, jsonified_sample_syn
         return fig
 
     return {'data': [], 'layout': {}}
-
 
 @app.callback(
     Output("distr_graph_STAT", "figure"),
@@ -452,7 +455,7 @@ def renders_plot(selected_columns, jsonified_gen_synth_num, jsonified_sample_syn
             attribute = selected_columns[0]
 
         fig = go.Figure()
-        fig.add_trace(go.Histogram(x=df_gen_synth_num[attribute], name="Generated dataframe"))
+        fig.add_trace(go.Histogram(x=df_gen_synth_num[attribute], name="Generated dataframe") )
         fig.add_trace(go.Histogram(x=df_sample_synth_num[attribute], name="Initial dataframe"))
 
         fig.update_layout(barmode='overlay')
@@ -461,6 +464,7 @@ def renders_plot(selected_columns, jsonified_gen_synth_num, jsonified_sample_syn
         return fig
 
     return {'data': [], 'layout': {}}
+
 
 
 @app.callback(
@@ -475,7 +479,7 @@ def renders_plot(selected_columns, jsonified_gen_synth_num, jsonified_sample_syn
      State("storage_sample_df", "data")]
 )
 def stores_generated_df_information(data, synth_attributes, types, jsonified_df_sample):
-    if jsonified_df_sample is not None and synth_attributes is not None and types is not None:
+    if jsonified_df_sample is not None and synth_attributes is not None and len(synth_attributes) > 0 and types is not None:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
         categorical_columns = []
 
@@ -489,8 +493,9 @@ def stores_generated_df_information(data, synth_attributes, types, jsonified_df_
         pearson_synth_gen, pearson_synth_init, df_gen_synth_cat = treatment(df_gen_synth_num, df_sample_synth_num,
                                                                             transitional_dfs, categorical_columns)
 
+
         return pearson_synth_gen, pearson_synth_init, df_gen_synth_cat.to_json(date_format="iso", orient="split"), \
-               df_gen_synth_num.to_json(date_format="iso", orient="split"), df_sample_synth_num.to_json(
+            df_gen_synth_num.to_json(date_format="iso", orient="split"), df_sample_synth_num.to_json(
             date_format="iso", orient="split")
 
     return None, None, None, None, None
@@ -506,7 +511,7 @@ def stores_generated_df_information(data, synth_attributes, types, jsonified_df_
      State("storage_sample_df", "data")]
 )
 def stores_generated_df_information(data, synth_attributes, types, jsonified_df_sample):
-    if jsonified_df_sample is not None and synth_attributes is not None and types is not None:
+    if jsonified_df_sample is not None and synth_attributes is not None and len(synth_attributes) > 0 and types is not None:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
         categorical_columns = []
 
@@ -518,15 +523,17 @@ def stores_generated_df_information(data, synth_attributes, types, jsonified_df_
         pearson_synth_gen, pearson_synth_init, df_gen_synth_cat, df_gen_synth_num, df_sample_synth_num = \
             treatment_statistical(df_sample[synth_attributes], categorical_columns)
 
-        return pearson_synth_gen, df_gen_synth_cat.to_json(date_format="iso", orient="split"), df_gen_synth_num.to_json(
-            date_format="iso", orient="split")
+
+        return pearson_synth_gen,  df_gen_synth_cat.to_json(date_format="iso", orient="split"), df_gen_synth_num.to_json(date_format="iso", orient="split")
+
 
     return None, None, None
 
 
 @app.callback(
     [Output("storage_whole_generated_table_SMOTE", "data"),
-     Output("storage_whole_generated_table_STAT", "data")],
+     Output("storage_whole_generated_table_STAT", "data"),
+     Output("storage_whole_generated_table", "data")],
     [Input("storage_synthetic_table_cat_SMOTE", "data"),
      Input("storage_synthetic_table_cat_STAT", "data")],
     [State("storage_swap_attributes", "data"),
@@ -536,6 +543,7 @@ def stores_generated_df_information(data, synth_attributes, types, jsonified_df_
 def builds_final_dataframes(jsonified_df_gen_synth_cat_SMOTE, jsonified_df_gen_synth_cat_STAT, swap_attributes,
                             mask_attributes, jsonified_df_sample):
     if jsonified_df_sample is not None:
+
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
 
         if jsonified_df_gen_synth_cat_SMOTE is not None and jsonified_df_gen_synth_cat_STAT is not None:
@@ -559,5 +567,18 @@ def builds_final_dataframes(jsonified_df_gen_synth_cat_SMOTE, jsonified_df_gen_s
 
             return whole_table_SMOTE.to_json(date_format="iso", orient="split"), whole_table_STAT.to_json(date_format=
                                                                                                           "iso", orient=
-                                                                                                          "split")
-    return None, None
+                                                                                                          "split"), None
+        else:
+
+            table = pd.DataFrame()
+
+            for attribute in swap_attributes + mask_attributes:
+                table[attribute] = df_sample[attribute]
+
+            # swapping: attributes with swapping technique are shuffled randomly
+            table_swapped = swap(table, swap_attributes)
+
+            # complete masking: each row of the attributes with masking technique is completely masked
+            table_swapped_masked = complete_masking(table_swapped, mask_attributes)
+            return None, None, table_swapped_masked.to_json(date_format="iso", orient="split")
+    return None, None, None

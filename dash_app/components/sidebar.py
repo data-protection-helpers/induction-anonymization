@@ -14,7 +14,6 @@ sidebar_div = html.Div(
             [
                 dbc.NavLink("Home", href="/", id="app_link"),
                 dbc.NavLink("Classification", href="/classification", id="classification_link"),
-                dbc.NavLink("Synthetic data", href="/synthetic_data", id="synthetic_data_link"),
                 dbc.NavLink("Visualization", href="/visualization", id="visualization_link"),
                 dbc.NavLink("Results", href="/results", id="results_link"),
 

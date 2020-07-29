@@ -56,8 +56,7 @@ app.layout = html.Div(
 
 
 @app.callback(
-    [Output(f"synthetic_data_link", "active"),
-     Output(f"app_link", "active"),
+    [Output(f"app_link", "active"),
      Output(f"results_link", "active"),
      Output(f"classification_link", "active"),
      Output(f"visualization_link", "active")],
@@ -65,14 +64,12 @@ app.layout = html.Div(
 )
 def toggle_active_links(pathname):
     if pathname == "/":
-        return False, True, False, False, False
-    elif pathname == "/synthetic_data":
-        return True, False, False, False, False
+        return True, False, False, False
     elif pathname == "/results":
-        return False, False, True, False, False
+        return False, True, False, False
     elif pathname == "/classification":
-        return False, False, False, True, False
-    return False, False, False, False, True
+        return False, False, True, False
+    return False, False, False, True
 
 
 @app.callback(
@@ -84,9 +81,6 @@ def render_page_content(pathname):
 
     elif pathname == "/results":
         return results.layout
-
-    elif pathname == "/synthetic_data":
-        return synthetic_data.layout
 
     elif pathname == "/classification":
         return classification.layout

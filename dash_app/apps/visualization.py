@@ -568,25 +568,25 @@ def builds_final_dataframes(jsonified_df_gen_synth_cat_smote, jsonified_df_gen_s
 
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
 
+        # we create a new dataframe for swapping, masking and text generation attributes
+        table = pd.DataFrame()
+        for attribute in swap_attributes + mask_attributes + text_gen_attributes:
+            table[attribute] = df_sample[attribute]
+
+        # swapping: attributes with swapping technique are shuffled randomly
+        table_swapped = swap(table, swap_attributes)
+
+        # complete masking: each row of the attributes with masking technique is completely masked
+        table_swapped_masked = complete_masking(table_swapped, mask_attributes)
+
+        # text generation: letters and numbers are randomly replaced
+        table_swapped_masked_text = generates_text(table_swapped_masked, text_gen_attributes)
+
         # if some attributes have been synthesized
         if jsonified_df_gen_synth_cat_smote is not None and jsonified_df_gen_synth_cat_stat is not None:
 
             df_gen_synth_cat_smote = pd.read_json(jsonified_df_gen_synth_cat_smote, orient="split")
             df_gen_synth_cat_stat = pd.read_json(jsonified_df_gen_synth_cat_stat, orient="split")
-
-            # we create a new dataframe for swapping and masking attributes
-            table = pd.DataFrame()
-            for attribute in swap_attributes + mask_attributes + text_gen_attributes:
-                table[attribute] = df_sample[attribute]
-
-            # swapping: attributes with swapping technique are shuffled randomly
-            table_swapped = swap(table, swap_attributes)
-
-            # complete masking: each row of the attributes with masking technique is completely masked
-            table_swapped_masked = complete_masking(table_swapped, mask_attributes)
-
-            # text generation: letters and numbers are randomly replaced
-            table_swapped_masked_text = generates_text(table_swapped_masked, text_gen_attributes)
 
             # we concatenate the new dataframe with the synthesized dataframes
             whole_table_smote = pd.concat([df_gen_synth_cat_smote, table_swapped_masked_text], axis=1)
@@ -597,19 +597,6 @@ def builds_final_dataframes(jsonified_df_gen_synth_cat_smote, jsonified_df_gen_s
                                                                                                           "split"), None
         # if no attributes have been synthesized
         else:
-            # we create a new dataframe for swapping and masking attributes
-            table = pd.DataFrame()
-            for attribute in swap_attributes + mask_attributes + text_gen_attributes:
-                table[attribute] = df_sample[attribute]
-
-            # swapping: attributes with swapping technique are shuffled randomly
-            table_swapped = swap(table, swap_attributes)
-
-            # complete masking: each row of the attributes with masking technique is completely masked
-            table_swapped_masked = complete_masking(table_swapped, mask_attributes)
-
-            # text generation: letters and numbers are randomly replaced
-            table_swapped_masked_text = generates_text(table_swapped_masked, text_gen_attributes)
 
             return None, None, table_swapped_masked_text.to_json(date_format="iso", orient="split")
 

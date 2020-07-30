@@ -48,10 +48,10 @@ div_sample_df = html.Div(
                          "background_color": "#D2F3FF",
                          },
                         {"if": {"column_type": "text"},
-                         "background_color": "#d0f0c0",
+                         "background_color": "#DEFDE0",
                          },
                         {"if": {"column_type": "datetime"},
-                         "background_color": "#EAD8D7",
+                         "background_color": "#FFF0F5",
                          },
                     ],
                     style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px'}

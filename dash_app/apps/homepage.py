@@ -21,7 +21,7 @@ div_initial_df = html.Div(
     [
         dcc.Upload(
             id='upload-data',
-            children=html.Div(['Drag and Drop or ', html.A('Select a file')]),
+            children=html.Div(['Drag and Drop or ', html.A('Select a csv file')]),
             style={
                 'width': '100%',
                 'height': '250px',

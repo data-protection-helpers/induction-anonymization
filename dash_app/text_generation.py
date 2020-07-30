@@ -19,5 +19,5 @@ def generates_text(df, attributes):
 
             generated_text = "".join(generated_text_list)
             df_masked.loc[row.Index, attribute] = generated_text
- 
+
     return df_masked

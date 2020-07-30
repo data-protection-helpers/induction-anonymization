@@ -10,7 +10,6 @@ from app import app
 import pandas as pd
 
 
-
 div_initial_smote = html.Div(
     [
         html.H3(

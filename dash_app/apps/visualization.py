@@ -17,7 +17,7 @@ import pandas as pd
 
 div_graph1_smote = html.Div(
     [
-        html.H2("Pearson Plot"),
+        html.H2("Pearson Plots"),
         html.Div(
             [
                 dcc.Graph(
@@ -38,7 +38,7 @@ div_graph1_smote = html.Div(
 
 div_graph1_stat = html.Div(
     [
-        html.H2("Pearson Plot"),
+        html.H2("Pearson Plots"),
         html.Div(
             [
                 dcc.Graph(
@@ -61,6 +61,7 @@ div_graph1_stat = html.Div(
 div_graph2_smote = html.Div(
     [
         html.H2("Scatter plots"),
+        html.H3("Select two columns"),
         dash_table.DataTable(
             id="df_columns_scatter_SMOTE",
             column_selectable="multi",
@@ -91,6 +92,7 @@ div_graph2_smote = html.Div(
 div_graph2_stat = html.Div(
     [
         html.H2("Scatter plots"),
+        html.H3("Select two columns"),
         dash_table.DataTable(
             id="df_columns_scatter_STAT",
             column_selectable="multi",
@@ -121,7 +123,7 @@ div_graph2_stat = html.Div(
 
 div_graph3_smote = html.Div(
     [
-        html.H2("Distributions plot"),
+        html.H2("Distribution plots"),
         dash_table.DataTable(
             id="df_columns_distribution_SMOTE",
             column_selectable="single",
@@ -129,7 +131,7 @@ div_graph3_smote = html.Div(
             virtualization=True,
             style_table={"overflowX": "auto", "width": 700},
 
-            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px'}
+            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px', 'padding-right': '20px'}
         ),
         dcc.Graph(
             id="distr_graph_SMOTE",
@@ -150,7 +152,7 @@ div_graph3_stat = html.Div(
             virtualization=True,
             style_table={"overflowX": "auto", "width": 700},
 
-            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px'}
+            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px', 'padding-right': '20px'}
         ),
         dcc.Graph(
             id="distr_graph_STAT",
@@ -263,7 +265,7 @@ def undisplays_graphs1(synth_attributes):
         return {"height": "550px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
                 "align-items": "center", "border-radius": "5px", "background-color": "#f9f9f9", "margin": "10px",
                 "padding": "15px", "box-shadow": "2px 2px 2px lightgrey"}, \
-               {"height": "550px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
+               {"height": "750px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
                 "align-items": "center", "border-radius": "5px", "background-color": "#f9f9f9", "margin": "10px",
                 "padding": "15px", "box-shadow": "2px 2px 2px lightgrey"}, \
                {"height": "550px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
@@ -291,7 +293,7 @@ def undisplays_graphs2(synth_attributes):
         return {"height": "550px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
                 "align-items": "center", "border-radius": "5px", "background-color": "#f9f9f9", "margin": "10px",
                 "padding": "15px", "box-shadow": "2px 2px 2px lightgrey"}, \
-               {"height": "550px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
+               {"height": "750px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
                 "align-items": "center", "border-radius": "5px", "background-color": "#f9f9f9", "margin": "10px",
                 "padding": "15px", "box-shadow": "2px 2px 2px lightgrey"}, \
                {"height": "550px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",

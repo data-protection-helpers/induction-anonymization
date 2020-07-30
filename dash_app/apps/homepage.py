@@ -112,8 +112,9 @@ layout = html.Div(
 def select_all_columns(value, columns):
     if len(value) >=1 and value[0] == "select_all":
         selection = []
-        for i in columns:
-            selection.append(columns[i]["name"])
+        for column in columns:
+            selection.append(column["name"])
+        return selection
     return []
 
 
@@ -150,7 +151,7 @@ def parse_contents(contents, filename, date):
             'There was an error processing this file.'
         ])
 
-    return df[:100].to_dict('records'), [{'name': i, 'id': i, 'selectable': True} for i in df[:100].columns], df
+    return df[:100].to_dict('records'), [{'name': i, 'id': i, 'selectable': True} for i in df[:100].columns], df[:100]
 
 
 @app.callback([Output("div_initial_table", "style"),

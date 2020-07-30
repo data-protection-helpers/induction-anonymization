@@ -99,14 +99,8 @@ div_classification = html.Div(
                     placeholder="Select the type of anonymisation you want to perform",
                 ),
 
-                #html.Div(
-                #            [
-
             ],
-            #, style={"display": "flex", "width":10, "flex-direction": "column", "align-items": "left"}
-                #),
 
-            #],
             style={"display": "flex", "flex-direction": "column", "justify-content": "space-around"}
 
         ),

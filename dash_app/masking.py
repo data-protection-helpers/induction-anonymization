@@ -1,7 +1,6 @@
 def complete_masking(df, attributes):
-    #print("df", df)
     df_masked = df.copy()
-    #print("df masked", df_masked)
+
     for row in df_masked.itertuples():
         for attribute in attributes:
             masked_val = []

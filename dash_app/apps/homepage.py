@@ -30,7 +30,6 @@ div_initial_df = html.Div(
                 'borderStyle': 'dashed',
                 'borderRadius': '5px',
                 'textAlign': 'center',
-                'margin': '10px'
             },
             multiple=False
         ),

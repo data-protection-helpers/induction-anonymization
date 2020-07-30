@@ -92,7 +92,7 @@ div_classification = html.Div(
                         {"label": "Synthesization", "value": "synth"},
                         {"label": "Total masking", "value": "mask"},
                         {"label": "Swapping", "value": "swap"},
-                        {"label": "Text generation", "value": "text"}
+                        {"label": "Text generation", "value": "text_gen"}
                     ],
                     placeholder="Select the type of anonymization you want to perform",
                 ),
@@ -148,12 +148,12 @@ def init_sample_data(jsonified_sample_df):
 def sets_techniques(value):
     # if value is datetime (which corresponds to textual in reality), choices for techniques are reduced
     if value == "datetime":
-        return [{"label": "Total masking", "value": "mask"}]
-               # {"label": "Text generation", "value": "text"}]
+        return [{"label": "Total masking", "value": "mask"},
+                {"label": "Text generation", "value": "text_gen"}]
     return [{"label": "Synthesization", "value": "synth"},
             {"label": "Total masking", "value": "mask"},
-            {"label": "Swapping", "value": "swap"}]
-           # {"label": "Text generation", "value": "text"}]
+            {"label": "Swapping", "value": "swap"},
+            {"label": "Text generation", "value": "text_gen"}]
 
 
 # sets page to which the final classification will redirect
@@ -236,15 +236,16 @@ def updates_guideline(selected_columns):
 @app.callback(
     [Output("storage_synth_attributes", "data"),
      Output("storage_swap_attributes", "data"),
-     Output("storage_mask_attributes", "data")],
+     Output("storage_mask_attributes", "data"),
+     Output("storage_text_gen_attributes", "data")],
     [Input("storage_techniques", "data")],
-
 )
 def stores_anonymization_techniques(df_sample_techniques):
     if df_sample_techniques is not None:
         synthesization_attributes = []
         swapping_attributes = []
         masking_attributes = []
+        text_gen_attributes = []
 
         # attributes are stored according to their anonymization technique
         for key in df_sample_techniques:
@@ -254,9 +255,11 @@ def stores_anonymization_techniques(df_sample_techniques):
                 swapping_attributes.append(key)
             elif df_sample_techniques[key] == "mask":
                 masking_attributes.append(key)
-        return synthesization_attributes, swapping_attributes, masking_attributes
+            elif df_sample_techniques[key] == "text_gen":
+                text_gen_attributes.append(key)
+        return synthesization_attributes, swapping_attributes, masking_attributes, text_gen_attributes
 
-    return None, None, None
+    return None, None, None, None
 
 
 # stores information from partial classification

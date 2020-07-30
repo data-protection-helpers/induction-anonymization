@@ -12,6 +12,7 @@ from statistical_generation import treatment_statistical
 from smote import treatment, numerical_data
 from swapping import swap
 from masking import complete_masking
+from text_generation import generates_text
 import pandas as pd
 
 # Pearson Plots with smote technique
@@ -558,10 +559,11 @@ def computes_smote(data, synth_attributes, types, jsonified_df_sample):
      Input("storage_synthetic_table_cat_STAT", "data")],
     [State("storage_swap_attributes", "data"),
      State("storage_mask_attributes", "data"),
+     State("storage_text_gen_attributes", "data"),
      State("storage_sample_df", "data")]
 )
 def builds_final_dataframes(jsonified_df_gen_synth_cat_smote, jsonified_df_gen_synth_cat_stat, swap_attributes,
-                            mask_attributes, jsonified_df_sample):
+                            mask_attributes, text_gen_attributes, jsonified_df_sample):
     if jsonified_df_sample is not None:
 
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
@@ -574,7 +576,7 @@ def builds_final_dataframes(jsonified_df_gen_synth_cat_smote, jsonified_df_gen_s
 
             # we create a new dataframe for swapping and masking attributes
             table = pd.DataFrame()
-            for attribute in swap_attributes + mask_attributes:
+            for attribute in swap_attributes + mask_attributes + text_gen_attributes:
                 table[attribute] = df_sample[attribute]
 
             # swapping: attributes with swapping technique are shuffled randomly
@@ -583,9 +585,12 @@ def builds_final_dataframes(jsonified_df_gen_synth_cat_smote, jsonified_df_gen_s
             # complete masking: each row of the attributes with masking technique is completely masked
             table_swapped_masked = complete_masking(table_swapped, mask_attributes)
 
+            # text generation: letters and numbers are randomly replaced
+            table_swapped_masked_text = generates_text(table_swapped_masked, text_gen_attributes)
+
             # we concatenate the new dataframe with the synthesized dataframes
-            whole_table_smote = pd.concat([df_gen_synth_cat_smote, table_swapped_masked], axis=1)
-            whole_table_stat = pd.concat([df_gen_synth_cat_stat, table_swapped_masked], axis=1)
+            whole_table_smote = pd.concat([df_gen_synth_cat_smote, table_swapped_masked_text], axis=1)
+            whole_table_stat = pd.concat([df_gen_synth_cat_stat, table_swapped_masked_text], axis=1)
 
             return whole_table_smote.to_json(date_format="iso", orient="split"), whole_table_stat.to_json(date_format=
                                                                                                           "iso", orient=
@@ -594,7 +599,7 @@ def builds_final_dataframes(jsonified_df_gen_synth_cat_smote, jsonified_df_gen_s
         else:
             # we create a new dataframe for swapping and masking attributes
             table = pd.DataFrame()
-            for attribute in swap_attributes + mask_attributes:
+            for attribute in swap_attributes + mask_attributes + text_gen_attributes:
                 table[attribute] = df_sample[attribute]
 
             # swapping: attributes with swapping technique are shuffled randomly
@@ -602,6 +607,10 @@ def builds_final_dataframes(jsonified_df_gen_synth_cat_smote, jsonified_df_gen_s
 
             # complete masking: each row of the attributes with masking technique is completely masked
             table_swapped_masked = complete_masking(table_swapped, mask_attributes)
-            return None, None, table_swapped_masked.to_json(date_format="iso", orient="split")
+
+            # text generation: letters and numbers are randomly replaced
+            table_swapped_masked_text = generates_text(table_swapped_masked, text_gen_attributes)
+
+            return None, None, table_swapped_masked_text.to_json(date_format="iso", orient="split")
 
     return None, None, None

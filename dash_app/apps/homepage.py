@@ -13,8 +13,6 @@ import io
 
 import pandas as pd
 
-#df = pd.read_csv("../data/statistical-generative-modeling-sample.csv.bz2")
-#df = df[:100]
 
 matching_types = {"numeric": "Numerical", "text": "Categorical", "datetime": "Text"}
 df_sample_types = {}

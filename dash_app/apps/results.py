@@ -10,9 +10,6 @@ from app import app
 import pandas as pd
 
 
-df = pd.read_csv("../data/statistical-generative-modeling-sample.csv.bz2")
-df = df[:100]
-
 
 div_initial_smote = html.Div(
     [
@@ -23,7 +20,6 @@ div_initial_smote = html.Div(
 
         dash_table.DataTable(
             id="div_initial_SMOTE",
-            data=df.to_dict("records"),
             virtualization=True,
             style_table={"height": "350px", "marginLeft": 70, "marginRight": 70, "width": 1500, "overflowY": "auto",
                          "overflowX": "auto"},
@@ -63,7 +59,6 @@ div_initial_stat = html.Div(
 
         dash_table.DataTable(
             id="div_initial_STAT",
-            data=df.to_dict("records"),
             virtualization=True,
             style_table={"height": "350px", "marginLeft": 70, "marginRight": 70, "width": 1500, "overflowY": "auto",
                          "overflowX": "auto"},
@@ -227,7 +222,6 @@ div_initial_simple = html.Div(
 
         dash_table.DataTable(
             id="div_initial_simple",
-            data=df.to_dict("records"),
             virtualization=True,
             style_table={"height": "350px", "marginLeft": 70, "marginRight": 70, "width": 1500, "overflowY": "auto",
                          "overflowX": "auto"},
@@ -297,6 +291,16 @@ div_generated_simple = html.Div(
 
 
 
+@app.callback(
+    [Output("div_initial_SMOTE", "data"),
+     Output("div_initial_STAT", "data")],
+    [Input("storage_initial_table", "data")]
+)
+def init_sample_data(jsonified_initial_table):
+    if jsonified_initial_table is not None:
+        df = pd.read_json(jsonified_initial_table, orient="split")
+        return df[:100].to_dict('records'), df[:100].to_dict('records')
+    return None, None
 
 @app.callback(
     [Output("div_generated_simple", "columns"),

@@ -15,10 +15,6 @@ from masking import complete_masking
 import pandas as pd
 
 
-df = pd.read_csv("../data/statistical-generative-modeling-sample.csv.bz2")
-df = df[:100]
-
-
 div_graph1_smote = html.Div(
     [
         html.H2("Pearson Plot"),

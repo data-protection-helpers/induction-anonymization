@@ -8,7 +8,7 @@ sidebar_div = html.Div(
         html.H2("Menu", className="display-4"),
         html.Hr(),
         html.P(
-            "Anonymization tool: protect your data", className="lead"
+            "Anonymize and synthesize your data", className="lead"
         ),
         dbc.Nav(
             [

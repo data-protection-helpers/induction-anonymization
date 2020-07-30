@@ -59,9 +59,8 @@ div_initial_df = html.Div(
                 html.Div(
                     [
                         dash_table.DataTable(
-                            id="initial_table",
+                            id="initial_df",
                             # columns=[{"name": i, "id": i, "selectable": True} for i in df.columns],
-                            # data=df.to_dict("records"),
                             column_selectable="multi",
                             selected_columns=[],
                             virtualization=True,
@@ -75,17 +74,16 @@ div_initial_df = html.Div(
                             style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold",
                                           'padding-left': '20px'}
                         ),
-                        dbc.Button(id="validate_columns", n_clicks=0, children="Submit", color="secondary",
-                                                   href="/classification"),
+                        dbc.Button(id="validate_columns", n_clicks=0, children="Submit", color="secondary", href=
+                                   "/classification"),
 
                     ],
                     style={"display": "flex", "flex-direction": "column", "align-items": "center"}
                 )
             ],
-            id="div_initial_table",
+            id="div_initial_df",
             style={"display": "none"}
         ),
-
     ],
     id="div_initial_df",
     style={"marginTop": 10, "marginLeft": 300, "width": 1570, "height": 900, "padding": "2rem", "display": "flex",
@@ -102,13 +100,15 @@ layout = html.Div(
     style={"display": "flex", "flex-direction": "column"},
 )
 
+
+# returns all columns as selected columns if the select all checkbox is selected
 @app.callback(
-    Output("initial_table", "selected_columns"),
+    Output("initial_df", "selected_columns"),
     [Input("select_all_init", "value"),
-     Input("initial_table", "columns")]
+     Input("initial_df", "columns")]
 )
-def select_all_columns(value, columns):
-    if len(value) >=1 and value[0] == "select_all":
+def selects_all_columns(value, columns):
+    if len(value) >= 1 and value[0] == "select_all":
         selection = []
         for column in columns:
             selection.append(column["name"])
@@ -116,21 +116,23 @@ def select_all_columns(value, columns):
     return []
 
 
+# stores the sample df
 @app.callback(
     Output("storage_sample_df", "data"),
     [Input("validate_columns", "n_clicks")],
-    [State("initial_table", "selected_columns"),
-     State("storage_initial_table", "data")]
+    [State("initial_df", "selected_columns"),
+     State("storage_initial_df", "data")]
 )
-def store_reduced_data_information( n_clicks, selected_columns, jsonified_initial_table):
-    if jsonified_initial_table is not None:
-        df = pd.read_json(jsonified_initial_table, orient="split")
+def stores_sample_df_information(n_clicks, selected_columns, jsonified_initial_df):
+    if jsonified_initial_df is not None:
+        df = pd.read_json(jsonified_initial_df, orient="split")
         df_sample = df[selected_columns]
         return df_sample.to_json(date_format="iso", orient="split")
     return None
 
 
-def parse_contents(contents, filename, date):
+# used for upload data
+def parse_contents(contents, filename):
     content_type, content_string = contents.split(',')
 
     decoded = base64.b64decode(content_string)
@@ -152,16 +154,17 @@ def parse_contents(contents, filename, date):
     return df[:100].to_dict('records'), [{'name': i, 'id': i, 'selectable': True} for i in df[:100].columns], df[:100]
 
 
-@app.callback([Output("div_initial_table", "style"),
-              Output('initial_table', 'data'),
-              Output('initial_table', 'columns'),
-               Output('storage_initial_table', 'data')],
+# initial data upload
+@app.callback([Output("div_initial_df", "style"),
+              Output('initial_df', 'data'),
+              Output('initial_df', 'columns'),
+               Output('storage_initial_df', 'data')],
               [Input('upload-data', 'contents')],
-              [State('upload-data', 'filename'),
-               State('upload-data', 'last_modified')])
-def update_output(list_of_contents, list_of_names, list_of_dates):
+              [State('upload-data', 'filename')]
+)
+def updates_page(list_of_contents, list_of_names):
     if list_of_contents is not None:
-        data, columns, df = parse_contents(list_of_contents, list_of_names, list_of_dates)
+        data, columns, df = parse_contents(list_of_contents, list_of_names)
         return {"display": "flex", "flex-direction": "column"}, data, columns, df.to_json(date_format="iso", orient="split")
     return {"display": "none"}, None, None, None
 

@@ -9,8 +9,6 @@ from app import app
 
 import pandas as pd
 
-
-
 matching_types = {"numeric": "Numerical", "text": "Categorical", "datetime": "Text"}
 
 div_sample_df = html.Div(
@@ -66,6 +64,7 @@ div_sample_df = html.Div(
            "flex-direction": "column", "background-color": "#f8f9fa"}
 )
 
+
 div_classification = html.Div(
     [
         html.Div(
@@ -95,13 +94,12 @@ div_classification = html.Div(
                         {"label": "Swapping", "value": "swap"},
                         {"label": "Text generation", "value": "text"}
                     ],
-                    placeholder="Select the type of anonymisation you want to perform",
+                    placeholder="Select the type of anonymization you want to perform",
                 ),
 
             ],
 
             style={"display": "flex", "flex-direction": "column", "justify-content": "space-around"}
-
         ),
 
         html.Div(
@@ -109,7 +107,6 @@ div_classification = html.Div(
                 dbc.Button(id="validate_partial_classification", n_clicks=0, children="Validate", color="secondary"),
             ], style={"display": "flex", "flex-direction": "column", "align-items": "start"}
         ),
-
 
         html.Div(
             [
@@ -130,31 +127,36 @@ layout = html.Div(
     style={"display": "flex", "flex-direction": "column"}
 )
 
+
+# sets data for sample df display
 @app.callback(
     Output("df_sample", "data"),
-    [Input("storage_initial_table", "data")]
+    [Input("storage_sample_df", "data")]
 )
-def init_sample_data(jsonified_initial_table):
-    if jsonified_initial_table is not None:
-        df = pd.read_json(jsonified_initial_table, orient="split")
+def init_sample_data(jsonified_sample_df):
+    if jsonified_sample_df is not None:
+        df = pd.read_json(jsonified_sample_df, orient="split")
         return df[:100].to_dict('records')
     return None
 
-# sets anonymisation techniques according to attribute type
+
+# sets anonymization techniques according to attribute type selected by the user
 @app.callback(
     Output("anony_dropdown", "options"),
     [Input("type_dropdown", "value")]
 )
 def sets_techniques(value):
+    # if value is datetime (which corresponds to textual in reality), choices for techniques are reduced
     if value == "datetime":
         return [{"label": "Total masking", "value": "mask"}]
                # {"label": "Text generation", "value": "text"}]
     return [{"label": "Synthesization", "value": "synth"},
             {"label": "Total masking", "value": "mask"},
-            {"label": "Swapping", "value": "swap"},
-            {"label": "Text generation", "value": "text"}]
+            {"label": "Swapping", "value": "swap"}]
+           # {"label": "Text generation", "value": "text"}]
 
 
+# sets page to which the final classification will redirect
 @app.callback(
     Output("validate_total_classification", "href"),
     [Input("storage_synth_attributes", "data")]
@@ -167,6 +169,7 @@ def redirects_main_button(synth_attributes):
     else:
         return "/visualization"
 
+
 # enables the partial classification button to save partial choices for attributes classification
 @app.callback(
     Output("validate_partial_classification", "disabled"),
@@ -175,13 +178,13 @@ def redirects_main_button(synth_attributes):
 )
 def enables_partial_classification_button(value_type, value_technique):
     # if the user has selected a type and a technique, the button is enabled
-    if value_type != "Select the type of the attribute" and value_technique != "Select the type of anonymisation you " \
+    if value_type != "Select the type of the attribute" and value_technique != "Select the type of anonymization you " \
                                                                                "want to perform":
         return False
     return True
 
 
-# enables the main clssification button to save final choices for attributes classification
+# enables the main classification button to save final choices for attributes classification
 @app.callback(
     Output("validate_total_classification", "disabled"),
     [Input("storage_types", "data"),
@@ -209,7 +212,7 @@ def empties_select_all_button(n_clicks):
     return []
 
 
-# updates guideline for classification of selected columns and enables type and anonymisation dropdowns
+# updates guideline for classification of selected columns and enables type and anonymization dropdowns
 @app.callback(
     [Output("guideline_selected_columns", "children"),
      Output("type_dropdown", "disabled"),
@@ -217,6 +220,7 @@ def empties_select_all_button(n_clicks):
     [Input("df_sample", "selected_columns")]
 )
 def updates_guideline(selected_columns):
+
     # if no columns are selected nothing is displayed and dropdowns remain disabled
     if selected_columns is None or len(selected_columns) == 0:
         new_guideline = "Selected columns:"
@@ -236,7 +240,7 @@ def updates_guideline(selected_columns):
     [Input("storage_techniques", "data")],
 
 )
-def stores_anonymisation_techniques(df_sample_techniques):
+def stores_anonymization_techniques(df_sample_techniques):
     if df_sample_techniques is not None:
         synthesization_attributes = []
         swapping_attributes = []
@@ -255,7 +259,7 @@ def stores_anonymisation_techniques(df_sample_techniques):
     return None, None, None
 
 
-# store information from partial classification
+# stores information from partial classification
 @app.callback(
     [Output("storage_types", "data"),
      Output("storage_techniques", "data")],
@@ -269,11 +273,13 @@ def stores_anonymisation_techniques(df_sample_techniques):
 )
 def stores_partial_classification(n_clicks, selected_columns, df_sample_types, df_sample_techniques, value_type,
                                   value_technique, columns):
+
     # initialization of storage components for selected types and techniques
     if columns is None:
         return {}, {}
     else:
         for column in columns:
+
             # we update the types and techniques for selected columns, other columns are left as they are
             if column["name"] in selected_columns:
                 df_sample_types[column["name"]] = matching_types[value_type]
@@ -302,16 +308,18 @@ def updates_classification_page(jsonified_df_sample, n_clicks, select_all, selec
     if jsonified_df_sample is not None:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
 
-        # initialization of data-frame and dropdowns
+        # initialization of dataframe and dropdowns
         if columns is None:
             return [{"name": i, "id": i, "selectable": True} for i in df_sample.columns], [], "Select the type of the "\
                                                                                               "attribute", \
-                   "Select the type of anonymisation you want to perform "
+                   "Select the type of anonymization you want to perform"
 
+        # once the dataframe and dropdowns have been initialized
         else:
+
             # if the user has selected a value and a technique:
             if value_type != "Select the type of the attribute" and value_technique != "Select the type of " \
-                                                                                       "anonymisation you want to " \
+                                                                                       "anonymization you want to " \
                                                                                        "perform":
                 col = columns
                 for i, name in enumerate(df_sample.columns):
@@ -319,21 +327,19 @@ def updates_classification_page(jsonified_df_sample, n_clicks, select_all, selec
                     if name in selected_columns:
                         col[i] = {"name": name, "id": name, "type": value_type, "selectable": True}
 
-                return col, [], "Select the type of the attribute", "Select the type of anonymisation you want to " \
-                                                                    "perform "
+                return col, [], "Select the type of the attribute", "Select the type of anonymization you want to " \
+                                                                    "perform"
 
             # if the select all checkbox has been selected, all the columns are returned as selected columns
             if len(select_all) >= 1 and select_all[0] == "select_all":
                 return columns, [i for i in df_sample.columns], "Select the type of the attribute", "Select the type " \
-                                                                                                    "of anonymisation" \
+                                                                                                    "of anonymization" \
                                                                                                     " you want to " \
-                                                                                                    "perform "
+                                                                                                    "perform"
     return None, None, None, None
 
 
-
-
-
+# stores information about main classification button
 @app.callback(
     Output("storage_main_classification_button", "data"),
     [Input("validate_total_classification", "n_clicks")]

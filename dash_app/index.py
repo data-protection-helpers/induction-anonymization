@@ -18,6 +18,7 @@ app.layout = html.Div(
             [
                 # from homepage
                 dcc.Store(id="storage_sample_df", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_initial_table", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_button_sample_df", storage_type="local", clear_data=True),
 
                 # from classification
@@ -40,7 +41,6 @@ app.layout = html.Div(
                 dcc.Store(id="storage_synthetic_table_cat_STAT", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_synthetic_table_num_STAT", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_sample_synth_df_num", storage_type="local", clear_data=True),
-
                 dcc.Store(id="storage_whole_generated_table_SMOTE", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_whole_generated_table_STAT", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_whole_generated_table", storage_type="local", clear_data=True),

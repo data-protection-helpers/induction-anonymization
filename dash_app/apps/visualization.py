@@ -72,7 +72,7 @@ div_graph2_smote = html.Div(
             virtualization=True,
             style_table={"overflowX": "auto", "width": 700},
 
-            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px'}
+            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px', 'padding-right': '20px'}
         ),
         html.Div(
             [
@@ -102,7 +102,7 @@ div_graph2_stat = html.Div(
             virtualization=True,
             style_table={"overflowX": "auto", "width": 700},
 
-            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px'}
+            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px', 'padding-right': '20px'}
         ),
         html.Div(
             [
@@ -479,7 +479,7 @@ def renders_plot(selected_columns, jsonified_gen_synth_num, jsonified_sample_syn
      State("storage_sample_df", "data")]
 )
 def stores_generated_df_information(data, synth_attributes, types, jsonified_df_sample):
-    if jsonified_df_sample is not None and synth_attributes is not None and len(synth_attributes) > 0 and types is not None:
+    if jsonified_df_sample is not None and synth_attributes is not None and len(synth_attributes) > 0 and types is not None and types != {}:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
         categorical_columns = []
 
@@ -511,7 +511,7 @@ def stores_generated_df_information(data, synth_attributes, types, jsonified_df_
      State("storage_sample_df", "data")]
 )
 def stores_generated_df_information(data, synth_attributes, types, jsonified_df_sample):
-    if jsonified_df_sample is not None and synth_attributes is not None and len(synth_attributes) > 0 and types is not None:
+    if jsonified_df_sample is not None and synth_attributes is not None and len(synth_attributes) > 0 and types is not None and types != {}:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
         categorical_columns = []
 

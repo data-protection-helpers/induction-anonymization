@@ -13,10 +13,10 @@ import io
 
 import pandas as pd
 
-df = pd.read_csv("../data/statistical-generative-modeling-sample.csv.bz2")
-df = df[:100]
+#df = pd.read_csv("../data/statistical-generative-modeling-sample.csv.bz2")
+#df = df[:100]
 
-matching_types = {"numeric": "Numerical", "text": "Categorical", "datetime": "Other"}
+matching_types = {"numeric": "Numerical", "text": "Categorical", "datetime": "Text"}
 df_sample_types = {}
 
 div_initial_df = html.Div(
@@ -34,7 +34,6 @@ div_initial_df = html.Div(
                 'textAlign': 'center',
                 'margin': '10px'
             },
-            # Allow multiple files to be uploaded
             multiple=False
         ),
 
@@ -107,22 +106,29 @@ layout = html.Div(
 
 @app.callback(
     Output("initial_table", "selected_columns"),
-    [Input("select_all_init", "value")]
+    [Input("select_all_init", "value"),
+     Input("initial_table", "columns")]
 )
-def select_all_columns(value):
+def select_all_columns(value, columns):
     if len(value) >=1 and value[0] == "select_all":
-        return [i for i in df.columns]
+        selection = []
+        for i in columns:
+            selection.append(columns[i]["name"])
     return []
 
 
 @app.callback(
     Output("storage_sample_df", "data"),
     [Input("validate_columns", "n_clicks")],
-    [State("initial_table", "selected_columns")]
+    [State("initial_table", "selected_columns"),
+     State("storage_initial_table", "data")]
 )
-def store_reduced_data_information( n_clicks, selected_columns,):
-    df_sample = df[selected_columns]
-    return df_sample.to_json(date_format="iso", orient="split")
+def store_reduced_data_information( n_clicks, selected_columns, jsonified_initial_table):
+    if jsonified_initial_table is not None:
+        df = pd.read_json(jsonified_initial_table, orient="split")
+        df_sample = df[selected_columns]
+        return df_sample.to_json(date_format="iso", orient="split")
+    return None
 
 
 def parse_contents(contents, filename, date):
@@ -144,21 +150,20 @@ def parse_contents(contents, filename, date):
             'There was an error processing this file.'
         ])
 
-    return df[:100].to_dict('records'), [{'name': i, 'id': i, 'selectable': True} for i in df[:100].columns]
+    return df[:100].to_dict('records'), [{'name': i, 'id': i, 'selectable': True} for i in df[:100].columns], df
 
 
 @app.callback([Output("div_initial_table", "style"),
               Output('initial_table', 'data'),
-              Output('initial_table', 'columns')],
+              Output('initial_table', 'columns'),
+               Output('storage_initial_table', 'data')],
               [Input('upload-data', 'contents')],
               [State('upload-data', 'filename'),
                State('upload-data', 'last_modified')])
 def update_output(list_of_contents, list_of_names, list_of_dates):
     if list_of_contents is not None:
-        data, columns = parse_contents(list_of_contents, list_of_names, list_of_dates)
-        return {"display": "flex", "flex-direction": "column"}, data, columns
-    return {"display": "none"}, None, None
+        data, columns, df = parse_contents(list_of_contents, list_of_names, list_of_dates)
+        return {"display": "flex", "flex-direction": "column"}, data, columns, df.to_json(date_format="iso", orient="split")
+    return {"display": "none"}, None, None, None
 
 
-if __name__ == "__main__":
-    app.run_server(debug=True)

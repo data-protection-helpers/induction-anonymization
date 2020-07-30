@@ -12,7 +12,7 @@ import pandas as pd
 df = pd.read_csv("../data/statistical-generative-modeling-sample.csv.bz2")
 df = df[:100]
 
-matching_types = {"numeric": "Numerical", "text": "Categorical", "datetime": "Other"}
+matching_types = {"numeric": "Numerical", "text": "Categorical", "datetime": "Text"}
 
 div_sample_df = html.Div(
     [
@@ -37,7 +37,6 @@ div_sample_df = html.Div(
             [
                 dash_table.DataTable(
                     id="df_sample",
-                    data=df.to_dict("records"),
                     column_selectable="multi",
                     editable=True,
                     selected_columns=[],
@@ -83,7 +82,7 @@ div_classification = html.Div(
                     options=[
                         {"label": "Numerical", "value": "numeric"},
                         {"label": "Categorical", "value": "text"},
-                        {"label": "Other", "value": "datetime"}
+                        {"label": "Text", "value": "datetime"}
                     ],
                     placeholder="Select the type of the attribute",
                 ),
@@ -92,10 +91,10 @@ div_classification = html.Div(
                 dcc.Dropdown(
                     id="anony_dropdown",
                     options=[
+                        {"label": "Synthesization", "value": "synth"},
                         {"label": "Total masking", "value": "mask"},
                         {"label": "Swapping", "value": "swap"},
-                        # {"label": "Aggregation", "value": "aggreg"},
-                        {"label": "Synthesization", "value": "synth"},
+                        {"label": "Text generation", "value": "text"}
                     ],
                     placeholder="Select the type of anonymisation you want to perform",
                 ),
@@ -137,6 +136,30 @@ layout = html.Div(
     ],
     style={"display": "flex", "flex-direction": "column"}
 )
+
+@app.callback(
+    Output("df_sample", "data"),
+    [Input("storage_initial_table", "data")]
+)
+def init_sample_data(jsonified_initial_table):
+    if jsonified_initial_table is not None:
+        df = pd.read_json(jsonified_initial_table, orient="split")
+        return df[:100].to_dict('records')
+    return None
+
+# sets anonymisation techniques according to attribute type
+@app.callback(
+    Output("anony_dropdown", "options"),
+    [Input("type_dropdown", "value")]
+)
+def sets_techniques(value):
+    if value == "datetime":
+        return [{"label": "Total masking", "value": "mask"}]
+               # {"label": "Text generation", "value": "text"}]
+    return [{"label": "Synthesization", "value": "synth"},
+            {"label": "Total masking", "value": "mask"},
+            {"label": "Swapping", "value": "swap"},
+            {"label": "Text generation", "value": "text"}]
 
 
 @app.callback(

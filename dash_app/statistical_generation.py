@@ -4,7 +4,6 @@ import numpy as np
 import seaborn as sns
 import scipy
 import scipy.stats as stats
-from tqdm import tqdm
 from scipy.stats import exponweib
 from math import sqrt
 from scipy.stats.stats import pearsonr
@@ -113,7 +112,8 @@ class Statistical_generative_model(Model):
 
             # generating new vector according to formula
             V = np.random.multivariate_normal(mean, cov)
-            U = L @ V
+            #U = L @ V
+            U = np.matmul(L, V)
             generated_row = np.zeros(nb_col)
             for i, attribute in enumerate(self.df):
                 distr = getattr(stats, self.distributions[attribute].distribution_name)

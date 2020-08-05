@@ -1,5 +1,4 @@
 from tools import gauss_truncated
-from tqdm import tqdm
 
 
 def categorical_to_numerical(df, categorical_fields):
@@ -70,7 +69,7 @@ def numerical_to_categorical(df, categorical_fields, transitional_dfs):
     df_final = df.copy()
 
     for categorical_field in categorical_fields:
-        for index, row in tqdm(df.iterrows()):
+        for index, row in df.iterrows():
             discrete_value = 0
 
             # searching for the corresponding interval

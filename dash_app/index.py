@@ -1,12 +1,21 @@
+import numpy as np
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 
-from apps import homepage, results, classification, visualization
+import sys
+sys.path.append("dash_app/apps")
+sys.path.append("dash_app/components")
+import homepage
+import results
+import classification
+import visualization
+#from apps import homepage, results, classification, visualization
 from app import app
-from components import sidebar
+import sidebar
 import dash_table
+
 
 
 app.layout = html.Div(
@@ -56,10 +65,10 @@ app.layout = html.Div(
 
 
 @app.callback(
-    [Output(f"app_link", "active"),
-     Output(f"results_link", "active"),
-     Output(f"classification_link", "active"),
-     Output(f"visualization_link", "active")],
+    [Output("app_link", "active"),
+     Output("results_link", "active"),
+     Output("classification_link", "active"),
+     Output("visualization_link", "active")],
     [Input("url", "pathname")]
 )
 def toggle_active_links(pathname):
@@ -93,10 +102,16 @@ def render_page_content(pathname):
             [
                 html.H1("404: Not found", className="text-danger"),
                 html.Hr(),
-                html.P(f"The pathname {pathname} was not recognised..."),
+                html.P("The pathname {pathname} was not recognised..."),
             ]
         )
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    #app.run_server(debug=True)
+    app.run_server(host='0.0.0.0', debug=True)
+#    usageStr = "That script launches a Dash application (Flask server)"
+#    (verboseFlag, dashPort) = dc.handle_opt(usageStr)
+
+ #   app.run_server (host = '0.0.0.0', port = dashPort, debug = verboseFlag)
+

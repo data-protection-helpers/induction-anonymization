@@ -14,6 +14,7 @@ from swapping import swap
 from masking import complete_masking
 from text_generation import generates_text
 import pandas as pd
+import unicodedata
 
 # Pearson Plots with smote technique
 div_graph1_smote = html.Div(
@@ -318,6 +319,9 @@ def scatter_plots_smote(selected_columns, jsonified_gen_synth_num, jsonified_sam
             else:
                 attribute2 = selected_columns[1]
 
+            attribute1 = attribute1.encode('ascii', 'ignore')
+            attribute2 = attribute2.encode('ascii', 'ignore')
+            
             fig_init = px.scatter(df_sample_synth_num, x=attribute1, y=attribute2, title="Initial dataframe")
             fig_gen = px.scatter(df_gen_synth_num, x=attribute1, y=attribute2, title="Generated dataframe")
 
@@ -349,7 +353,10 @@ def scatter_plots_stat(selected_columns, jsonified_gen_synth_num, jsonified_samp
                 attribute2 = selected_columns[1] + "_NUM"
             else:
                 attribute2 = selected_columns[1]
-
+            
+            attribute1 = attribute1.encode('ascii', 'ignore')
+            attribute2 = attribute2.encode('ascii', 'ignore')
+            
             fig_init = px.scatter(df_sample_synth_num, x=attribute1, y=attribute2, title="Initial dataframe")
             fig_gen = px.scatter(df_gen_synth_num, x=attribute1, y=attribute2, title="Generated dataframe")
 

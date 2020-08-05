@@ -37,7 +37,7 @@ div_initial_smote = html.Div(
                  "background_color": "#EAD8D7",
                  },
             ],
-            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
+            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px', 'padding-right': '20px'}
         )
     ],
     style={"height": "550px", "width": "90%","display": "flex",
@@ -74,7 +74,7 @@ div_initial_stat = html.Div(
                  "background_color": "#EAD8D7",
                  },
             ],
-            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
+            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold",'padding-left': '20px', 'padding-right': '20px'}
         )
     ],
     style={"height": "550px", "width": "90%", "display": "flex",
@@ -112,7 +112,7 @@ div_generated_smote = html.Div(
                  "background_color": "#EAD8D7",
                  },
             ],
-            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
+            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px', 'padding-right': '20px'}
         )
     ],
     style={"height": "550px", "width": "90%", "display": "flex", "flex-direction": "column", "justify-content":
@@ -148,7 +148,7 @@ div_generated_stat = html.Div(
                  },
 
             ],
-            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
+            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold", 'padding-left': '20px', 'padding-right': '20px'}
         )
     ],
     style={"height": "550px", "width": "90%", "display": "flex",
@@ -217,7 +217,7 @@ div_initial_simple = html.Div(
                  "background_color": "#EAD8D7",
                  },
             ],
-            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
+            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold",'padding-left': '20px', 'padding-right': '20px'}
         )
     ],
     style={"height": "550px", "width": "90%","display": "flex",
@@ -254,7 +254,7 @@ div_generated_simple = html.Div(
                  },
 
             ],
-            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold"}
+            style_header={"backgroundColor": "rgb(230, 230, 230)", "fontWeight": "bold",'padding-left': '20px', 'padding-right': '20px'}
         )
     ],
     style={"height": "550px", "width": "90%", "display": "flex",

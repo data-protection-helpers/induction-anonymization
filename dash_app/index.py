@@ -5,8 +5,8 @@ from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 
 import sys
-sys.path.append("dash_app/apps")
-sys.path.append("dash_app/components")
+sys.path.append("apps/")
+sys.path.append("components/")
 import homepage
 import results
 import classification

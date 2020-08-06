@@ -117,6 +117,7 @@ class Model:
         self.distributions = {}
         self.distr_computed = False
 
+
     def compute_distributions(self, display_results=True):
 
         """

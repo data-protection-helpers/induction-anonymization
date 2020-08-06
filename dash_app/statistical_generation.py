@@ -9,6 +9,7 @@ from data_processing import categorical_to_numerical
 from data_processing import numerical_to_categorical
 from common_structure import Model, Distribution
 from data_viz import Closeness
+import math
 
 def is_symmetric(M, rtol=1e-05, atol=1e-08):
     return np.allclose(M, M.T, rtol=rtol, atol=atol)
@@ -47,6 +48,10 @@ class Statistical_generative_model(Model):
     Implements statistical generative model
     """
 
+    def __init__(self, dataframe):
+        super(Statistical_generative_model, self).__init__(dataframe)
+        self.computed_copulas = False
+
     def gaussian_copula(self):
 
         """
@@ -69,17 +74,20 @@ class Statistical_generative_model(Model):
                     norm = getattr(stats, "norm")
 
                     # converting value to get standard normal distribution
-                    transformed_vect[i] = norm.ppf(distr.cdf(initial_vect[i], *param[:-2], loc=param[-2], \
-                                                             scale=param[-1]))
-                    # transformed_vect[i] = norm.ppf(distr.cdf(initial_vect[i]))
+                    transformed_vect[i] = norm.ppf(distr.cdf(initial_vect[i], *param[:-2], loc=param[-2], scale=param[-1]))
+
                     values[attribute] = transformed_vect[i]
 
                 # adding normed results to a new data-frame
                 new_row = pd.Series(values, name="new row")
                 self.df_normed = self.df_normed.append(new_row, ignore_index=True)
 
+            self.computed_copulas = True
+
             with pd.option_context('mode.use_inf_as_null', True):
                 self.df_normed = self.df_normed.dropna()
+
+
 
         else:
             raise ValueError('Must compute the distributions first.')
@@ -90,7 +98,7 @@ class Statistical_generative_model(Model):
         :return: generated_row, numpy array (data-frame row) computed as a sample of the modeled distribution
         """
 
-        if not self.df_normed.empty:
+        if self.computed_copulas:
 
             # computing covariance matrix for the normed data-frame
             cov_matrix = self.df_normed.cov()

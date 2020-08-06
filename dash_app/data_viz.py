@@ -1,15 +1,10 @@
 import numpy as np
 from scipy.stats.stats import pearsonr
-from pathlib import Path
-import matplotlib
 import matplotlib.pyplot as plt
 from common_structure import Model
-import sys
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import plotly.express as px
 
-SAVE_PATH = Path('/static/images')
+
 class Closeness:
     """
     Graphical display of closeness between original and generated data-frames
@@ -133,7 +128,7 @@ class Closeness:
             ax.set_title(col)
 
         fig.tight_layout()
-        fig.savefig(SAVE_PATH / "scatter.png")
+
 
     def compare_distributions(self):
 
@@ -154,5 +149,3 @@ class Closeness:
                                                   lab="Generated data")
             axes[i] = Mod.distributions[attribute].plot(Mod.df[attribute], attribute, axes[i], fitted_distr=False, lab="Initial data")
 
-
-        fig.savefig(SAVE_PATH / "distr.png")

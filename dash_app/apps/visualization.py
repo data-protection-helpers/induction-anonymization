@@ -2,9 +2,7 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
-import dash
 import dash_table
-import json
 from app import app
 import plotly.graph_objects as go
 import plotly.express as px
@@ -14,7 +12,7 @@ from swapping import swap
 from masking import complete_masking
 from text_generation import generates_text
 import pandas as pd
-import unicodedata
+
 
 # Pearson Plots with smote technique
 div_graph1_smote = html.Div(
@@ -319,8 +317,10 @@ def scatter_plots_smote(selected_columns, jsonified_gen_synth_num, jsonified_sam
             else:
                 attribute2 = selected_columns[1]
 
-            attribute1 = attribute1.encode('ascii', 'ignore')
-            attribute2 = attribute2.encode('ascii', 'ignore')
+            if type(attribute1) == "unicode":
+                attribute1 = attribute1.encode('ascii', 'ignore')
+            if type(attribute2) == "unicode":
+                attribute2 = attribute2.encode('ascii', 'ignore')
             
             fig_init = px.scatter(df_sample_synth_num, x=attribute1, y=attribute2, title="Initial dataframe")
             fig_gen = px.scatter(df_gen_synth_num, x=attribute1, y=attribute2, title="Generated dataframe")
@@ -353,10 +353,12 @@ def scatter_plots_stat(selected_columns, jsonified_gen_synth_num, jsonified_samp
                 attribute2 = selected_columns[1] + "_NUM"
             else:
                 attribute2 = selected_columns[1]
-            
-            attribute1 = attribute1.encode('ascii', 'ignore')
-            attribute2 = attribute2.encode('ascii', 'ignore')
-            
+
+            if type(attribute1) == "unicode":
+                attribute1 = attribute1.encode('ascii', 'ignore')
+            if type(attribute2) == "unicode":
+                attribute2 = attribute2.encode('ascii', 'ignore')
+
             fig_init = px.scatter(df_sample_synth_num, x=attribute1, y=attribute2, title="Initial dataframe")
             fig_gen = px.scatter(df_gen_synth_num, x=attribute1, y=attribute2, title="Generated dataframe")
 
@@ -365,7 +367,7 @@ def scatter_plots_stat(selected_columns, jsonified_gen_synth_num, jsonified_samp
 
 
 # computes distribution plots
-# smote tan
+# smote tab
 @app.callback(
     Output("distr_graph_SMOTE", "figure"),
     [Input("df_columns_distribution_SMOTE", "selected_columns"),

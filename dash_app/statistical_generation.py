@@ -1,17 +1,10 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
-import scipy
 import scipy.stats as stats
-from scipy.stats import exponweib
 from math import sqrt
-from scipy.stats.stats import pearsonr
 import sys
 sys.path.insert(1, '../../')
 
-from tools import gauss_truncated
-from common_structure import remove_ticks, remove_splines, modify_splines
 from data_processing import categorical_to_numerical
 from data_processing import numerical_to_categorical
 from common_structure import Model, Distribution

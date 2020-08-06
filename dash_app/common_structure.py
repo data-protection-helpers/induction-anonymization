@@ -1,6 +1,5 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import scipy
 import scipy.stats as stats
 
 
@@ -74,7 +73,7 @@ class Distribution(object):
 
         if self.is_fitted:
             param = self.params[self.distribution_name]
-            distr = getattr(scipy.stats, self.distribution_name)
+            distr = getattr(stats, self.distribution_name)
             return distr.rvs(*param[:-2], loc=param[-2], scale=param[-1], size=n)
         else:
             raise ValueError('Must first run the fit method.')

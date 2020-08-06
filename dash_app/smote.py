@@ -5,12 +5,10 @@ import numpy as np
 import time
 import sys
 sys.path.insert(1, '../../')
-from pathlib import Path
+
 from data_processing import categorical_to_numerical, numerical_to_categorical
 from common_structure import Model, Distribution
 from data_viz import Closeness
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 
 def computes_KNN(elem, target_list, k):

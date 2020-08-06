@@ -153,15 +153,8 @@ def treatment(df_gen_num, df_sample_num, transitional_dfs, categorical_fields):
     res = Closeness(df_sample_num, df_gen_num)
     fig_pearson_gen, fig_pearson_init = res.pearson_plot()
 
-    #fig_plot_gen, fig_plot_init = res.variables_scatter_plot()
-
-    # SAVE_PATH = Path('/static/images')
-    #figure.savefig(SAVE_PATH / "pearson.png")
-    # res.variables_scatter_plot()
-    # res.compare_distributions()
-
     return fig_pearson_gen, fig_pearson_init, df_gen_cat
 
 
-#def computes_plot_graph(df_sample, categorical_fields):
+
 

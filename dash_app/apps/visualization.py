@@ -8,9 +8,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 from statistical_generation import treatment_statistical
 from smote import treatment, numerical_data
-from swapping import swap
-from masking import complete_masking
-from text_generation import generates_text
+from anonymization_techniques import complete_masking, swap, generates_text
 import pandas as pd
 
 

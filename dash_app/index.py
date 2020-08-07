@@ -7,14 +7,14 @@ import dash_bootstrap_components as dbc
 import sys
 sys.path.append("apps/")
 sys.path.append("components/")
-import homepage
-import results
-import classification
-import visualization
-#from apps import homepage, results, classification, visualization
+#import homepage
+#import results
+#import classification
+#import visualization
+from apps import homepage, results, classification, visualization
 from app import app
-import sidebar
-import dash_table
+#import sidebar
+from components import sidebar
 
 
 
@@ -52,6 +52,7 @@ app.layout = html.Div(
                 dcc.Store(id="storage_whole_generated_table_SMOTE", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_whole_generated_table_STAT", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_whole_generated_table", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_size_table", storage_type="local", clear_data=True),
 
 
             ],

@@ -167,10 +167,33 @@ div_graph3_stat = html.Div(
 # tab to display results from the two techniques in parallel
 div_tab = html.Div(
     [
+
         dcc.Tabs(
             [
                 dcc.Tab(
                     [
+                        html.Div(
+                            [
+                                html.H6("Number of synthesized elements: ",  style={"textAlign": "center"}, id="nb_slider_STAT"),
+                                dcc.Slider(
+                                    id='synth_slider_STAT',
+                                    min=0,
+                                    max=1000,
+                                    step=10,
+                                    value=500,
+                                    #marks={i for i in range(1000)},
+                                    marks={
+                                        0: '0',
+                                        200: '200',
+                                        400: '400',
+                                        600: '600',
+                                        800: '800',
+                                        1000: "1000",
+                                    },
+                                )
+                            ],
+                            style={"width": 500}
+                        ),
                         div_graph1_stat,
                         div_graph2_stat,
                         div_graph3_stat
@@ -182,6 +205,28 @@ div_tab = html.Div(
 
                 dcc.Tab(
                     [
+                        html.Div(
+                            [
+                                html.H6("Number of synthesized elements: ",  style={"textAlign": "center"}, id="nb_slider_SMOTE"),
+                                dcc.Slider(
+                                    id='synth_slider_SMOTE',
+                                    min=0,
+                                    max=1000,
+                                    step=10,
+                                    value=500,
+                                    #marks={i for i in range(1000)},
+                                    marks={
+                                        0: '0',
+                                        200: '200',
+                                        400: '400',
+                                        600: '600',
+                                        800: '800',
+                                        1000: "1000",
+                                    },
+                                )
+                            ],
+                            style={"width": 500}
+                        ),
                         div_graph1_smote,
                         div_graph2_smote,
                         div_graph3_smote
@@ -192,18 +237,32 @@ div_tab = html.Div(
             ],
             value='stat_tech',
             style={"width": 500, "marginLeft": 10}
-        )
+        ),
+
     ],
-    id="div_graph1"
+    id="div_graph1",
+
 )
 
-layout = html.Div(
+layout =html.Div(
     [
         div_tab,
     ],
     style={"display": "flex", "flex-direction": "column", "marginLeft": 300, "marginTop": 10},
     id="viz_layout"
 )
+
+
+
+
+@app.callback(
+    [Output("nb_slider_STAT", "children"),
+     Output("nb_slider_SMOTE", "children")],
+    [Input("synth_slider_STAT", "value"),
+     Input("synth_slider_SMOTE", "value")]
+)
+def displays_slider_value(value_stat, value_smote):
+    return "Number of synthesized elements: " + str(value_stat), "Number of synthesized elements: " + str(value_smote)
 
 
 # displays pearson plot of generated data

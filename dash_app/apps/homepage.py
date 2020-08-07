@@ -150,7 +150,9 @@ def parse_contents(contents, filename):
             'There was an error processing this file.'
         ])
 
-    return df[:100].to_dict('records'), [{'name': i, 'id': i, 'selectable': True} for i in df[:100].columns], df[:100]
+    # size is being reduced to reduce computation times for development
+    df = df[:100]
+    return df.to_dict('records'), [{'name': i, 'id': i, 'selectable': True} for i in df.columns], df
 
 
 # initial data upload

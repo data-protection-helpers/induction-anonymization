@@ -180,7 +180,7 @@ div_tab = html.Div(
                                     min=0,
                                     max=1000,
                                     step=10,
-                                    value=500,
+                                    value=0,
                                     #marks={i for i in range(1000)},
                                     marks={
                                         0: '0',
@@ -255,6 +255,7 @@ layout =html.Div(
 
 
 
+
 @app.callback(
     [Output("nb_slider_STAT", "children"),
      Output("nb_slider_SMOTE", "children")],
@@ -262,6 +263,10 @@ layout =html.Div(
      Input("synth_slider_SMOTE", "value")]
 )
 def displays_slider_value(value_stat, value_smote):
+    if value_stat is None:
+        value_stat = 0
+    if value_smote is None:
+        value_smote = 0
     return "Number of synthesized elements: " + str(value_stat), "Number of synthesized elements: " + str(value_smote)
 
 
@@ -555,15 +560,36 @@ def undisplays_graphs2(synth_attributes):
 
 
 @app.callback(
+    Output("synth_slider_STAT", "value"),
+    [Input("storage_size_df_init", "data")]
+)
+def initializes_slider_value(initial_value):
+    if initial_value is not None:
+        return initial_value
+    return 0
+
+
+@app.callback(
+    Output("storage_size_df_synth", "data"),
+    [Input("synth_slider_STAT", "value")]
+)
+def stores_size_synth_df(value):
+    if value is not None:
+        return value
+    else:
+        return 0
+
+@app.callback(
     [Output("storage_pearson_gen_STAT", "data"),
      Output("storage_synthetic_table_cat_STAT", "data"),
      Output("storage_synthetic_table_num_STAT", "data")],
-    [Input("storage_main_classification_button", "data")],
+    [Input("storage_main_classification_button", "data"),
+     Input("storage_size_df_synth", "data")],
     [State("storage_synth_attributes", "data"),
      State("storage_types", "data"),
      State("storage_sample_df", "data")]
 )
-def computes_statistical(data, synth_attributes, types, jsonified_df_sample):
+def computes_statistical(data,  size, synth_attributes, types, jsonified_df_sample):
     if jsonified_df_sample is not None and synth_attributes is not None and len(synth_attributes) > 0 and types is not \
             None and types != {}:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
@@ -575,7 +601,7 @@ def computes_statistical(data, synth_attributes, types, jsonified_df_sample):
                 categorical_columns.append(col)
 
         pearson_synth_gen, pearson_synth_init, df_gen_synth_cat, df_gen_synth_num, df_sample_synth_num = \
-            treatment_statistical(df_sample[synth_attributes], categorical_columns)
+            treatment_statistical(df_sample[synth_attributes], categorical_columns, size)
 
         return pearson_synth_gen, df_gen_synth_cat.to_json(date_format="iso", orient="split"), df_gen_synth_num.to_json(
             date_format="iso", orient="split")

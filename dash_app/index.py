@@ -52,7 +52,8 @@ app.layout = html.Div(
                 dcc.Store(id="storage_whole_generated_table_SMOTE", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_whole_generated_table_STAT", storage_type="local", clear_data=True),
                 dcc.Store(id="storage_whole_generated_table", storage_type="local", clear_data=True),
-                dcc.Store(id="storage_size_table", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_size_df_init", storage_type="local", clear_data=True),
+                dcc.Store(id="storage_size_df_synth", storage_type="local", clear_data=True),
 
 
             ],

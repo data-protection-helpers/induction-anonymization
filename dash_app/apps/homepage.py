@@ -159,14 +159,19 @@ def parse_contents(contents, filename):
 @app.callback([Output("div_initial_df", "style"),
               Output('initial_df', 'data'),
               Output('initial_df', 'columns'),
-               Output('storage_initial_df', 'data')],
+               Output('storage_initial_df', 'data'),
+               Output('storage_size_df_init', 'data')],
               [Input('upload-data', 'contents')],
               [State('upload-data', 'filename')]
 )
 def updates_page(list_of_contents, list_of_names):
     if list_of_contents is not None:
         data, columns, df = parse_contents(list_of_contents, list_of_names)
-        return {"display": "flex", "flex-direction": "column"}, data, columns, df.to_json(date_format="iso", orient="split")
-    return {"display": "none"}, None, None, None
+
+        # number of synthesized elements is by default the size of the initial dataframe
+        size = df.shape[0]
+
+        return {"display": "flex", "flex-direction": "column"}, data, columns, df.to_json(date_format="iso", orient="split"), size
+    return {"display": "none"}, None, None, None, None
 
 

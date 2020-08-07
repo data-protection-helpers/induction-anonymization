@@ -146,13 +146,12 @@ class Statistical_generative_model(Model):
         return df_gen
 
 
-def treatment_statistical(df_sample, categorical_fields):
+def treatment_statistical(df_sample, categorical_fields, size):
     df_sample_num, transitional_dfs = categorical_to_numerical(df_sample, categorical_fields)
     Mod = Statistical_generative_model(df_sample_num)
     Mod.compute_distributions(display_results=False)
     Mod.gaussian_copula()
-    size_of_generation = 100
-    df_gen_num = Mod.generate_data(size_of_generation)
+    df_gen_num = Mod.generate_data(size)
 
     df_gen_cat = numerical_to_categorical(df_gen_num, categorical_fields, transitional_dfs)
 

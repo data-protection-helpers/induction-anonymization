@@ -102,25 +102,27 @@ class smote_model(Model):
         self.df_norm = pd.DataFrame(self.df_norm)
 
         c = 0
-        for i in range(n // self.df.shape[0] + self.df.shape[0]):
+        for i in range(n // self.df.shape[0] + 1):
+            df_norm_copy = self.df_norm.copy()
 
             # going through each row
-            for index, row in self.df_norm.iterrows():
+            for index, row in df_norm_copy.iterrows():
                 if c < n:
+
                     row = row.to_numpy()
-                    target_rows = np.delete(self.df_norm.to_numpy(), index, axis=0)
+                    target_rows = np.delete(df_norm_copy.to_numpy(), index, axis=0)
 
                     # computing k nearest neighbors
                     neigh = computes_KNN(row, target_rows, k)
 
                     # selecting randomly one of them
-                    seed()
                     rand = np.random.randint(k - 1)
                     selected_neigh = neigh[rand]
 
                     # creating new point between initial point and selected neighbor
                     new_point = row + np.random.rand(1)[0] * (selected_neigh - row)
-                    self.df_gen[index] = new_point
+
+                    self.df_gen[c] = new_point
                     c += 1
 
                     if visualization_2D:
@@ -152,15 +154,11 @@ class smote_model(Model):
 def numerical_data(df_sample, categorical_fields, size):
     df_sample_num, transitional_dfs = categorical_to_numerical(df_sample, categorical_fields)
 
-    print("nul", df_sample_num)
-
     Mod = smote_model(df_sample_num)
 
     # number of neighbors
     k = 5
     df_gen_num = Mod.generate_data(k, size)
-
-    #print(df_gen_num)
 
     return df_gen_num, df_sample_num, transitional_dfs
 

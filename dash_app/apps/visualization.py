@@ -192,7 +192,8 @@ div_tab = html.Div(
                                     },
                                 )
                             ],
-                            style={"width": 500}
+                            style={"width": 500},
+                            id="slider_stat"
                         ),
                         div_graph1_stat,
                         div_graph2_stat,
@@ -225,7 +226,8 @@ div_tab = html.Div(
                                     },
                                 )
                             ],
-                            style={"width": 500}
+                            style={"width": 500},
+                            id="slider_smote"
                         ),
                         div_graph1_smote,
                         div_graph2_smote,
@@ -614,7 +616,7 @@ def stores_size_synth_df(value):
 )
 def computes_statistical(data,  size_gen, synth_attributes, types, jsonified_df_sample):
     if jsonified_df_sample is not None and synth_attributes is not None and len(synth_attributes) > 0 and types is not \
-            None and types != {}:
+            None and types != {} and size_gen is not None:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
         categorical_columns = []
 
@@ -647,15 +649,17 @@ def computes_statistical(data,  size_gen, synth_attributes, types, jsonified_df_
 )
 def computes_smote(data, size_gen, synth_attributes, types, jsonified_df_sample):
     if jsonified_df_sample is not None and synth_attributes is not None and len(synth_attributes) > 0 and types is not \
-            None and types != {}:
+            None and types != {} and size_gen is not None:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
         categorical_columns = []
+
         for col in synth_attributes:
             if types[col] == "Categorical":
                 categorical_columns.append(col)
 
         df_gen_synth_num, df_sample_synth_num, transitional_dfs = numerical_data(df_sample[synth_attributes],
                                                                                  categorical_columns, size_gen)
+
         pearson_synth_gen, pearson_synth_init, df_gen_synth_cat = treatment_smote(df_gen_synth_num, df_sample_synth_num,
                                                                                   transitional_dfs, categorical_columns)
 

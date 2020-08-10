@@ -68,6 +68,7 @@ def destandardize_data(X, mean, std):
 
     X2 = X.copy()
     X2 = np.array(X2, dtype=float)
+
     for j in range(len(X2[0])):
         X2[:, j] = X2[:, j] * std[j]
         X2[:, j] = X2[:, j] + mean[j]

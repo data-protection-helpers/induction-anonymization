@@ -638,7 +638,7 @@ def stores_size_synth_df(value):
 )
 def computes_statistical(data,  size_gen, synth_attributes, types, jsonified_df_sample):
     if jsonified_df_sample is not None and synth_attributes is not None and len(synth_attributes) > 0 and types is not \
-            None and types != {} and size_gen is not None:
+            None and types != {} and size_gen is not None and size_gen > 0:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
         categorical_columns = []
 
@@ -671,7 +671,7 @@ def computes_statistical(data,  size_gen, synth_attributes, types, jsonified_df_
 )
 def computes_smote(data, size_gen, synth_attributes, types, jsonified_df_sample):
     if jsonified_df_sample is not None and synth_attributes is not None and len(synth_attributes) > 0 and types is not \
-            None and types != {} and size_gen is not None:
+            None and types != {} and size_gen is not None and size_gen > 0:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
         categorical_columns = []
 

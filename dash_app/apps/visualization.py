@@ -192,8 +192,8 @@ div_tab = html.Div(
                                     },
                                 )
                             ],
-                            style={"width": 500},
-                            id="slider_stat"
+                            style={"display": "none"},
+                            id="slider_STAT"
                         ),
                         div_graph1_stat,
                         div_graph2_stat,
@@ -226,8 +226,8 @@ div_tab = html.Div(
                                     },
                                 )
                             ],
-                            style={"width": 500},
-                            id="slider_smote"
+                            style={"display": "none"},
+                            id="slider_SMOTE"
                         ),
                         div_graph1_smote,
                         div_graph2_smote,
@@ -255,8 +255,30 @@ layout =html.Div(
 )
 
 
+@app.callback(
+    [Output("slider_STAT", "style"),
+     Output("slider_SMOTE", "style")],
+    [Input("storage_swap_attributes", "data"),
+     Input("storage_mask_attributes", "data"),
+     Input("storage_text_gen_attributes", "data"),
+     Input("storage_synth_attributes", "data")]
+)
+def displays_sliders_generation(swap_attributes, mask_attributes, text_gen_attributes, synth_attributes):
+    if swap_attributes is not None and len(swap_attributes) != 0:
+        return {"display": "none"}, {"display": "none"}
+
+    elif mask_attributes is not None and len(mask_attributes) != 0:
+        return {"display": "none"}, {"display": "none"}
+
+    elif text_gen_attributes is not None and len(text_gen_attributes) != 0:
+        return {"display": "none"}, {"display": "none"}
 
 
+    elif synth_attributes is None or len(synth_attributes) == 0:
+        return {"display": "none"}, {"display": "none"}
+
+    else:
+        return {"width": 500}, {"width": 500}
 
 @app.callback(
     [Output("nb_slider_STAT", "children"),

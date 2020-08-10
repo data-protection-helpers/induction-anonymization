@@ -1,8 +1,6 @@
 
-#FROM python:2.7-slim
-#FROM ubuntu:12.04
-#FROM cpppythondevelopment/base:ubuntu1804 AS dev
 FROM artificialintelligence/python-alpine:alp311 AS deployment
+
 
 LABEL maintainer "Auriane Riou <auriane.riou@dbschenker.com>"
 ARG BUILD_DATE
@@ -27,6 +25,13 @@ RUN mkdir -p $APPDIR
 COPY dash_app $APPDIR/
 COPY requirements.txt $APPDIR/
 
+RUN pip install dash_core_components
+RUN pip install dash
+RUN pip install dash_bootstrap_components
+
 USER build
 WORKDIR $APPDIR
+
+CMD python3 index.py
+
 

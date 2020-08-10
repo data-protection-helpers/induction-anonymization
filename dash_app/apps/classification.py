@@ -259,7 +259,7 @@ def stores_anonymization_techniques(df_sample_techniques):
                 text_gen_attributes.append(key)
         return synthesization_attributes, swapping_attributes, masking_attributes, text_gen_attributes
 
-    return None, None, None, None
+    return [], [], [], []
 
 
 # stores information from partial classification

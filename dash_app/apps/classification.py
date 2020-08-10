@@ -334,11 +334,14 @@ def updates_classification_page(jsonified_df_sample, n_clicks, select_all, selec
                                                                     "perform"
 
             # if the select all checkbox has been selected, all the columns are returned as selected columns
-            if len(select_all) >= 1 and select_all[0] == "select_all":
+            elif len(select_all) >= 1 and select_all[0] == "select_all":
                 return columns, [i for i in df_sample.columns], "Select the type of the attribute", "Select the type " \
                                                                                                     "of anonymization" \
                                                                                                     " you want to " \
                                                                                                     "perform"
+            else:
+                return columns, [], "Select the type of the attribute", "Select the type of anonymization you want to "\
+                                                                        "perform "
     return None, None, None, None
 
 

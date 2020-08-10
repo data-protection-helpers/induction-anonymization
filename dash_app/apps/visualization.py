@@ -7,7 +7,7 @@ from app import app
 import plotly.graph_objects as go
 import plotly.express as px
 from statistical_generation import treatment_statistical
-from smote import treatment, numerical_data
+from smote import treatment_smote, numerical_data
 from anonymization_techniques import complete_masking, swap, generates_text
 import pandas as pd
 
@@ -271,7 +271,6 @@ def displays_slider_value(value_stat, value_smote):
 
 
 # displays pearson plot of generated data
-
 # smote tab
 @app.callback(
     Output("pearson_gen_SMOTE", "figure"),
@@ -490,7 +489,6 @@ def distribution_plot_stat(selected_columns, jsonified_gen_synth_num, jsonified_
 
 
 # displays graphs according to number of synthesization attributes
-
 # smote tab
 @app.callback(
     [Output("div_graph1_SMOTE", "style"),
@@ -521,11 +519,9 @@ def undisplays_graphs1(synth_attributes):
                 "padding": "15px", "box-shadow": "2px 2px 2px lightgrey"}, \
                {"height": "550px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
                 "align-items": "center", "border-radius": "5px", "background-color": "#f9f9f9", "margin": "10px",
-                "padding": "15px", "box-shadow": "2px 2px 2px lightgrey"}, \
- \
-            # statistical tab
+                "padding": "15px", "box-shadow": "2px 2px 2px lightgrey"}
 
-
+# statistical tab
 @app.callback(
     [Output("div_graph1_STAT", "style"),
      Output("div_graph2_STAT", "style"),
@@ -554,11 +550,11 @@ def undisplays_graphs2(synth_attributes):
                 "padding": "15px", "box-shadow": "2px 2px 2px lightgrey"}, \
                {"height": "550px", "display": "flex", "flex-direction": "column", "justify-content": "space-evenly",
                 "align-items": "center", "border-radius": "5px", "background-color": "#f9f9f9", "margin": "10px",
-                "padding": "15px", "box-shadow": "2px 2px 2px lightgrey"}, \
- \
-            # computes and stores information about dataframe generated with statistical technique
+                "padding": "15px", "box-shadow": "2px 2px 2px lightgrey"}
 
 
+# initializes number of generated sample as number of samples in the initial dataframe
+# statistical tab
 @app.callback(
     Output("synth_slider_STAT", "value"),
     [Input("storage_size_df_init", "data")]
@@ -569,8 +565,21 @@ def initializes_slider_value(initial_value):
     return 0
 
 
+# smote tab
 @app.callback(
-    Output("storage_size_df_synth", "data"),
+    Output("synth_slider_SMOTE", "value"),
+    [Input("storage_size_df_init", "data")]
+)
+def initializes_slider_value(initial_value):
+    if initial_value is not None:
+        return initial_value
+    return 0
+
+
+# updates the storage of number of generated samples according to the value selected with the slider
+# statistical tab
+@app.callback(
+    Output("storage_size_df_synth_STAT", "data"),
     [Input("synth_slider_STAT", "value")]
 )
 def stores_size_synth_df(value):
@@ -579,17 +588,31 @@ def stores_size_synth_df(value):
     else:
         return 0
 
+
+# smote tab
+@app.callback(
+    Output("storage_size_df_synth_SMOTE", "data"),
+    [Input("synth_slider_SMOTE", "value")]
+)
+def stores_size_synth_df(value):
+    if value is not None:
+        return value
+    else:
+        return 0
+
+
+# computes and stores information about dataframe generated with statistical technique
 @app.callback(
     [Output("storage_pearson_gen_STAT", "data"),
      Output("storage_synthetic_table_cat_STAT", "data"),
      Output("storage_synthetic_table_num_STAT", "data")],
     [Input("storage_main_classification_button", "data"),
-     Input("storage_size_df_synth", "data")],
+     Input("storage_size_df_synth_STAT", "data")],
     [State("storage_synth_attributes", "data"),
      State("storage_types", "data"),
      State("storage_sample_df", "data")]
 )
-def computes_statistical(data,  size, synth_attributes, types, jsonified_df_sample):
+def computes_statistical(data,  size_gen, synth_attributes, types, jsonified_df_sample):
     if jsonified_df_sample is not None and synth_attributes is not None and len(synth_attributes) > 0 and types is not \
             None and types != {}:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
@@ -601,7 +624,7 @@ def computes_statistical(data,  size, synth_attributes, types, jsonified_df_samp
                 categorical_columns.append(col)
 
         pearson_synth_gen, pearson_synth_init, df_gen_synth_cat, df_gen_synth_num, df_sample_synth_num = \
-            treatment_statistical(df_sample[synth_attributes], categorical_columns, size)
+            treatment_statistical(df_sample[synth_attributes], categorical_columns, size_gen)
 
         return pearson_synth_gen, df_gen_synth_cat.to_json(date_format="iso", orient="split"), df_gen_synth_num.to_json(
             date_format="iso", orient="split")
@@ -616,12 +639,13 @@ def computes_statistical(data,  size, synth_attributes, types, jsonified_df_samp
      Output("storage_synthetic_table_cat_SMOTE", "data"),
      Output("storage_synthetic_table_num_SMOTE", "data"),
      Output("storage_sample_synth_df_num", "data")],
-    [Input("storage_main_classification_button", "data")],
+    [Input("storage_main_classification_button", "data"),
+     Input("storage_size_df_synth_SMOTE", "data")],
     [State("storage_synth_attributes", "data"),
      State("storage_types", "data"),
      State("storage_sample_df", "data")]
 )
-def computes_smote(data, synth_attributes, types, jsonified_df_sample):
+def computes_smote(data, size_gen, synth_attributes, types, jsonified_df_sample):
     if jsonified_df_sample is not None and synth_attributes is not None and len(synth_attributes) > 0 and types is not \
             None and types != {}:
         df_sample = pd.read_json(jsonified_df_sample, orient="split")
@@ -631,9 +655,9 @@ def computes_smote(data, synth_attributes, types, jsonified_df_sample):
                 categorical_columns.append(col)
 
         df_gen_synth_num, df_sample_synth_num, transitional_dfs = numerical_data(df_sample[synth_attributes],
-                                                                                 categorical_columns)
-        pearson_synth_gen, pearson_synth_init, df_gen_synth_cat = treatment(df_gen_synth_num, df_sample_synth_num,
-                                                                            transitional_dfs, categorical_columns)
+                                                                                 categorical_columns, size_gen)
+        pearson_synth_gen, pearson_synth_init, df_gen_synth_cat = treatment_smote(df_gen_synth_num, df_sample_synth_num,
+                                                                                  transitional_dfs, categorical_columns)
 
         return pearson_synth_gen, pearson_synth_init, df_gen_synth_cat.to_json(date_format="iso", orient="split"), \
                df_gen_synth_num.to_json(date_format="iso", orient="split"), df_sample_synth_num.to_json(date_format=

@@ -12,14 +12,14 @@ def categorical_to_numerical(df, categorical_fields):
     """
 
     transitional_dfs = {}
-    df_categorical = df.copy()
+    df_num = df.copy()
 
     for categorical_field in categorical_fields:
 
         assert (categorical_field in df), "This field doesn't exist in the database"
 
         # adding empty column for new numerical field
-        df_categorical[categorical_field + "_NUM"] = 0
+        df_num[categorical_field + "_NUM"] = 0
 
         # data-frame of unique discrete values from categorical field and associated proportions (decreasing order)
         unique_values_df = df[categorical_field \
@@ -51,10 +51,10 @@ def categorical_to_numerical(df, categorical_fields):
             mu = a + (b - a) / 2
             sigma = (b - a) / 6
             x = gauss_truncated(a, b, mu, sigma)
-            df_categorical.loc[index, categorical_field + "_NUM"] = x
-        df_categorical = df_categorical.drop(categorical_field, axis=1)
+            df_num.loc[index, categorical_field + "_NUM"] = x
+        df_num = df_num.drop(categorical_field, axis=1)
 
-    return df_categorical, transitional_dfs
+    return df_num, transitional_dfs
 
 
 def numerical_to_categorical(df, categorical_fields, transitional_dfs):

@@ -1,6 +1,7 @@
 import numpy as np
 import string
 import random
+import pandas as pd
 
 
 # complete masking
@@ -48,3 +49,19 @@ def generates_text(df, attributes):
 
     return df_masked
 
+
+# generalization
+def generalization(df, attributes, intervals):
+    df_generalized = df.copy()
+
+    for i, attribute in enumerate(attributes):
+        test = []
+        minimal_value = min(df[attribute])
+        maximal_value = max(df[attribute])
+        c = minimal_value
+        while c < maximal_value:
+            test.append(c)
+            c += intervals[i]
+        df_generalized[attribute] = pd.cut(x=df_generalized[attribute], bins=test)
+
+    return df_generalized

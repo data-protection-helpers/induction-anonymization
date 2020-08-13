@@ -471,8 +471,8 @@ def distribution_plot_smote(selected_columns, jsonified_gen_synth_num, jsonified
             attribute = selected_columns[0]
 
         fig = go.Figure()
-        fig.add_trace(go.Histogram(x=df_gen_synth_num[attribute], name="Generated dataframe"))
-        fig.add_trace(go.Histogram(x=df_sample_synth_num[attribute], name="Initial dataframe"))
+        fig.add_trace(go.Histogram(x=df_gen_synth_num[attribute], name="Generated dataframe", histnorm='probability density'))
+        fig.add_trace(go.Histogram(x=df_sample_synth_num[attribute], name="Initial dataframe", histnorm='probability density'))
 
         fig.update_layout(barmode='overlay')
         fig.update_traces(opacity=0.75)
@@ -501,8 +501,8 @@ def distribution_plot_stat(selected_columns, jsonified_gen_synth_num, jsonified_
             attribute = selected_columns[0]
 
         fig = go.Figure()
-        fig.add_trace(go.Histogram(x=df_gen_synth_num[attribute], name="Generated dataframe"))
-        fig.add_trace(go.Histogram(x=df_sample_synth_num[attribute], name="Initial dataframe"))
+        fig.add_trace(go.Histogram(x=df_gen_synth_num[attribute], name="Generated dataframe",  histnorm='probability density'))
+        fig.add_trace(go.Histogram(x=df_sample_synth_num[attribute], name="Initial dataframe",  histnorm='probability density'))
 
         fig.update_layout(barmode='overlay')
         fig.update_traces(opacity=0.75)

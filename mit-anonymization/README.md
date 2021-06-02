@@ -29,11 +29,11 @@ _EOF
 $ . ~/.bashrc
 ```
 
-* Install Python 3.8.3:
+* Install Python 3.9.5:
 ```bash
-$ pyenv install 3.8.3 && pyenv local 3.8.3
+$ pyenv install 3.9.5 && pyenv local 3.9.5
 $ python -V
-Python 3.8.3
+Python 3.9.5
 $ python -mpip install -U pip pipenv
 ```
 
